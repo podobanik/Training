@@ -1,4 +1,4 @@
-import './JournalList.css'
+import styles from './JournalList.module.css';
 import JournalItem from '../JournalItem/JournalItem';
 import CardButton from '../CardButton/CardButton';
 

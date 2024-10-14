@@ -1,4 +1,4 @@
-import './App.css';
+import styles from './App.module.css';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
 import Body from './layouts/Body/Body';
 import LeftPanel from './layouts/LeftPanel/LeftPanel';
@@ -41,7 +41,7 @@ function App() {
   };
 
   return (
-    <div className='app'>
+    <div className={styles['app']}>
       <LeftPanel>
         <Header/>
         <JournalAddButton/>
