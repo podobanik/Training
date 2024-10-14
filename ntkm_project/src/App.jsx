@@ -1,43 +1,56 @@
 import './App.css';
-import Button from './components/Button/Button';
-import CardButton from './components/CardButton/CardButton';
-import JournalItem from './components/JournalItem/JournalItem';
+import JournalAddButton from './components/JournalAddButton/JournalAddButton';
+import Body from './layouts/Body/Body';
+import LeftPanel from './layouts/LeftPanel/LeftPanel';
+import Header from './components/Header/Header';
+import JournalForm from './components/JournalForm/JournalForm';
+import JournalList from './components/JournalList/JournalList';
+import { useState } from 'react';
 
-function App() {
-    const data = [
+const data = [
       {
         title: 'Тест2',
-        text: 'Тестовое сообщение2',
-        date: new Date()
+        post: 'Тестовое сообщение2',
+        date: new Date(),
+        id:1
       },
       {
         title: 'Тест3',
-        text: 'Тестовое сообщение3',
-        date: new Date()
+        post: 'Тестовое сообщение3',
+        date: new Date(),
+        id:2
       },
       {
         title: 'Тест4',
-        text: 'Тестовое сообщение4',
-        date: new Date()
+        post: 'Тестовое сообщение4',
+        date: new Date(),
+        id:3
       },
-    ]
+];
+
+function App() {
+  const [items, setItems] = useState(data)
+
+  const addItem = item => {
+    setItems(oldItems => [...oldItems, {
+      post:item.post,
+      title: item.title,
+      date: new Date(item.date),
+      id: oldItems.length >0 ? Math.max(...oldItems.map(i => i.id)) + 1 : 1
+    }])
+  };
 
   return (
-    <>
-      <Button/>
-      <CardButton>
-        <JournalItem
-        title={data[0].title}
-        text={data[0].text}
-        date={data[0].date}
-        />
-      </CardButton>
-      <JournalItem
-        title={data[1].title}
-        text={data[1].text}
-        date={data[1].date}
-      />
-    </>
+    <div className='app'>
+      <LeftPanel>
+        <Header/>
+        <JournalAddButton/>
+        <JournalList items={items}/>
+      </LeftPanel>
+      <Body>
+        <JournalForm onSubmit={addItem}/>
+      </Body>  
+    </div>
   );
 }
 

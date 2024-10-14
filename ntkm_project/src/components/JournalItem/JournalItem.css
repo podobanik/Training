@@ -1,7 +1,7 @@
 .journal-item{
     border-radius: 3px;
-    background: rgba(85, 1, 1, 0.03);
-    color: #0a0a0a;
+    background: rgba(255, 255, 255, 0);
+    color: #fff;
     padding: 20px;
 }
 
@@ -13,7 +13,7 @@
 }
 
 .journal-item__date {
-    color: rgba(8, 2, 2, 0.4);
+    color: rgba(255, 255, 255, 0.40);
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
@@ -21,7 +21,7 @@
 }
 
 .journal-item__text {
-    color: rgba(146, 26, 26, 0.6);
+    color: rgba(255, 255, 255, 0.60);
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
