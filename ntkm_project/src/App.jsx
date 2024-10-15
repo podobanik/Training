@@ -1,11 +1,11 @@
 import styles from './App.module.css';
-import JournalAddButton from './components/JournalAddButton/JournalAddButton';
 import Body from './layouts/Body/Body';
 import LeftPanel from './layouts/LeftPanel/LeftPanel';
 import Header from './components/Header/Header';
-import JournalForm from './components/JournalForm/JournalForm';
 import JournalList from './components/JournalList/JournalList';
+import ModalForm from './components/ModalForm/ModalForm';
 import { useState } from 'react';
+import {Container, Row, Col} from "reactstrap";
 
 const data = [
       {
@@ -41,16 +41,28 @@ function App() {
   };
 
   return (
-    <div className={styles['app']}>
-      <LeftPanel>
-        <Header/>
-        <JournalAddButton/>
-        <JournalList items={items}/>
-      </LeftPanel>
-      <Body>
-        <JournalForm onSubmit={addItem}/>
-      </Body>  
-    </div>
+    <Container className={styles['app']} style={{marginTop: "20px"}}>
+      <Row>
+        <Col>
+          <LeftPanel>
+            <Header/>
+            <ModalForm
+              create={true}
+              newJournal={true}
+              onSubmit={addItem}
+            />
+            <JournalList items={items}/>
+          </LeftPanel>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Body>
+             Body
+          </Body> 
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
