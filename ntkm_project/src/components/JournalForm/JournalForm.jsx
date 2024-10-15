@@ -1,140 +1,109 @@
-import { useState, useEffect } from 'react';
-import Button from '../Button/Button';
 import styles from './JournalForm.module.css';
+import Button from '../Button/Button';
+import { useContext, useEffect, useReducer, useRef } from 'react';
 import cn from 'classnames';
-import { Form, FormGroup, Input, Label} from "reactstrap";
+import { INITIAL_STATE, formReducer } from './JournalForm.state';
+import Input from '../Input/Input';
+import { UserContext } from '../../context/user.context';
 
+function JournalForm({ onSubmit, data, onDelete }) {
+	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
+	const { isValid, isFormReadyToSubmit, values } = formState;
+	const titleRef = useRef();
+	const dateRef = useRef();
+	const postRef = useRef();
+	const { userId } = useContext(UserContext);
 
-function JournalForm( props ) {
-    const [formValidState, setFormValidState] = useState({
-        title: true,
-        post: true,
-        date: true
-    });
+	const focusError = (isValid) => {
+		switch(true) {
+		case !isValid.title:
+			titleRef.current.focus();
+			break;
+		case !isValid.date:
+			dateRef.current.focus();
+			break;
+		case !isValid.post:
+			postRef.current.focus();
+			break;
+		}
+	};
 
-    const [journal, setJournal] = useState({});
+	useEffect(() => {
+		if (!data) {
+			dispatchForm({ type: 'CLEAR' });
+			dispatchForm({ type: 'SET_VALUE', payload: { userId }});
+		}
+		dispatchForm({ type: 'SET_VALUE', payload: { ...data }});
+	}, [data]);
 
-    useEffect(() => {
-        if (!props.newJournal) {
-            setJournal(props.journal)
-        }  
-    }, [props.journal])
+	useEffect(() => {
+		let timerId;
+		if (!isValid.date || !isValid.post || !isValid.title) {
+			focusError(isValid);
+			timerId = setTimeout(() => {
+				dispatchForm({ type: 'RESET_VALIDITY' });
+			}, 2000);
+		}
+		return () => {
+			clearTimeout(timerId);
+		};
+	}, [isValid]);
 
+	useEffect(() => {
+		if (isFormReadyToSubmit) {
+			onSubmit(values);
+			dispatchForm({ type: 'CLEAR' });
+			dispatchForm({ type: 'SET_VALUE', payload: { userId }});
+		}
+	}, [isFormReadyToSubmit, values, onSubmit, userId]);
 
-    const defaultIfEmpty = value => {
-        return value === "" ? "" : value;
-    };
+	useEffect(() => {
+		dispatchForm({ type: 'SET_VALUE', payload: { userId }});
+	}, [userId]);
 
-    const onChange = (e) => {
-        const newState = journal
-        newState[e.target.name] = e.target.value
-        setJournal(newState)
-    }
-    
-    const addJournalItem = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const formProps = Object.fromEntries(formData);
-        let isFormValid = true;
-        if (!formProps.title?.trim().length) {
-            setFormValidState(state => ({...state, title: false}));
-            isFormValid = false;
-        } else {
-            setFormValidState(state => ({...state, title: true}));
-        }
-        if (!formProps.post?.trim().length) {
-            setFormValidState(state => ({...state, post: false}));
-            isFormValid = false;
-        } else {
-            setFormValidState(state => ({...state, post: true}));
-        }
-        if (!formProps.date.trim().length) {
-            setFormValidState(state => ({...state, date: false}));
-            isFormValid = false;
-        } else {
-            setFormValidState(state => ({...state, date: true}));
-        }
-        if (!isFormValid) {
-            return;
-        }
-        
-        props.onSubmit(formProps);
-        props.toggle();
-    }
+	const onChange = (e) => {
+		dispatchForm({ type: 'SET_VALUE', payload: { [e.target.name]: e.target.value }});
+	};
 
-    const editJournalItem = (e) => {
-        e.preventDefault();
-        const formData = new FormData(journal);
-        const formProps = Object.fromEntries(formData);
-        let isFormValid = true;
-        if (!formProps.title?.trim().length) {
-            setFormValidState(state => ({...state, title: false}));
-            isFormValid = false;
-        } else {
-            setFormValidState(state => ({...state, title: true}));
-        }
-        if (!formProps.post?.trim().length) {
-            setFormValidState(state => ({...state, post: false}));
-            isFormValid = false;
-        } else {
-            setFormValidState(state => ({...state, post: true}));
-        }
-        if (!formProps.date.trim().length) {
-            setFormValidState(state => ({...state, date: false}));
-            isFormValid = false;
-        } else {
-            setFormValidState(state => ({...state, date: true}));
-        }
-        if (!isFormValid) {
-            return;
-        }
-        
-        props.onSubmit(formProps);
-        props.toggle();
-    }
+	const addJournalItem = (e) => {
+		e.preventDefault();
+		dispatchForm({ type: 'SUBMIT' });
+	};
 
-  return (
-    <>
-        <Form onSubmit={props.newJournal ? addJournalItem : editJournalItem} className={styles['journal-form']}>
-            <FormGroup>
-                <Label for="title">Название заметки:</Label>
-                <Input
-                    type="title"
-                    name="title"
-                    onChange={onChange}
-                    defaultValue={defaultIfEmpty(journal.title)}
-                    className={cn(styles['input'], {
-                        [styles['invalid']]: !formValidState.title
-                })}/>
-            </FormGroup>
-            <FormGroup>
-                <Label for="date">Дата создания:</Label>
-                <Input
-                    type="date"
-                    name="date"
-                    onChange={onChange}
-                    defaultValue={defaultIfEmpty(journal.date)}
-                    className={cn(styles['input'], {
-                        [styles['invalid']]: !formValidState.date
-                })}/>
-            </FormGroup>
-            <FormGroup>
-                <Label for="post">Текст заметки:</Label>
-                <Input
-                    type="textarea"
-                    name="post"
-                    onChange={onChange}
-                    defaultValue={defaultIfEmpty(journal.post)}
-                    className={cn(styles['input'], {
-                        [styles['invalid']]: !formValidState.post
-                })}/>
-            </FormGroup>
-            <div style={{display: "flex", justifyContent: "space-between"}}>
-                <Button text={'Подтвердить'}/> <Button onClick={props.toggle} text={'Отменить'}/>
-            </div>
-        </Form>
-    </>
-  );
+	const deleteJournalItem = () => {
+		onDelete(data.id);
+		dispatchForm({ type: 'CLEAR' });
+		dispatchForm({ type: 'SET_VALUE', payload: { userId }});
+	};
+
+	return (
+		<form className={styles['journal-form']} onSubmit={addJournalItem}>
+			<div className={styles['form-row']}>
+				<Input appearence="title" type='text' ref={titleRef} onChange={onChange} value={values.title} name='title' isValid={!isValid.title}/>
+				{data?.id && <button className={styles['delete']} type="button" onClick={deleteJournalItem}>
+					<img src="/archive.svg" alt="Кнопка удалить" />
+				</button>}
+			</div>
+			<div className={styles['form-row']}>
+				<label htmlFor="date" className={styles['form-label']}>
+					<img src='/calendar.svg' alt='Иконка календаря'/>
+					<span>Дата</span>
+				</label>
+				<Input type='date' ref={dateRef} onChange={onChange} name='date' value={values.date ? new Date(values.date).toISOString().slice(0, 10) : ''} id="date" isValid={!isValid.title}/>
+			</div>
+			<div className={styles['form-row']}>
+				<label htmlFor="tag" className={styles['form-label']}>
+					<img src='/folder.svg' alt='Иконка папки'/>
+					<span>Метки</span>
+				</label>
+				<Input type='text' onChange={onChange} id="tag" value={values.tag} name='tag' />
+			</div>
+			<textarea ref={postRef} name="post" id="" onChange={onChange} value={values.post} cols="30" rows="10" className={cn(styles['input'], {
+				[styles['invalid']]: !isValid.post
+			})}></textarea>
+			<Button>Сохранить</Button>
+		</form>
+	);
 }
 
 export default JournalForm;

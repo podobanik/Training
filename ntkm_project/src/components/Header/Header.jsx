@@ -1,13 +1,11 @@
 import SelectUser from '../SelectUser/SelectUser';
-import Logo from '../Logo/Logo';
-
-const logos = ['/logo.svg', '/vite.svg'];
+import styles from './Header.module.css'
 
 function Header() {
 
 	return (
 		<>
-			<Logo image={logos[0]} />
+      <h1 className={styles['logo']}>Заметки</h1>
 			<SelectUser />
 		</>
 	);

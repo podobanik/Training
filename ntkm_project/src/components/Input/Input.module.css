@@ -6,8 +6,9 @@
     font-weight: 600;
     line-height: normal;
     font-family: 'Source Sans 3', sans-serif;
-    border-bottom: 1px solid #323232;
+    border: 1px solid #323232;
     width: 100%;
+    color: #d2d1d1;
 }
 
 .input {
@@ -18,11 +19,12 @@
     font-weight: 600;
     line-height: normal;
     font-family: 'Source Sans 3', sans-serif;
-    border-bottom: 1px solid #323232;
+    border: 1px solid #323232;
     width: 100%;
+    color: #d2d1d1;
 }
 
 .invalid {
-    border: 1px solid red;
+    border: 2px solid red;
     background: rgb(68, 6, 6);
 }

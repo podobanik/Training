@@ -1,3 +1,10 @@
 .logo {
     width: 180px;
+    font-style: italic;
+    color: #FFF;
+    text-align: left;
+    display: flex;
+    padding: auto;
+    gap: 10px;
 }
+
