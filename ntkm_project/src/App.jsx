@@ -1,69 +1,18 @@
-import './App.css';
-import Header from './components/JournalApp/Header/Header';
-import JournalAddButton from './components/JournalApp/JournalAddButton/JournalAddButton';
-import JournalForm from './components/JournalApp/JournalForm/JournalForm';
-import JournalList from './components/JournalApp/JournalList/JournalList';
-import Body from './layouts/Body/Body';
-import LeftPanel from './layouts/LeftPanel/LeftPanel';
-import { useLocalStorage } from './hooks/use-localstorage.hook';
-import { UserContextProvider } from './context/user.context';
-import { useState } from 'react';
-import { TagContextProvider } from './context/tag.context';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Dashboard from './layouts/dashboard/Dashboard.jsx';
+import Home from './layouts/Home.jsx';
 
-function mapItems(items) {
-	if (!items) {
-		return [];
-	}
-	return items.map(i => ({
-		...i,
-		date: new Date(i.date)
-	}));
-}
-
-function App() {
-	const [items, setItems] = useLocalStorage('data');
-	const [selectedItem, setSelectedItem] = useState(null);
-	console.log('App');
-
-	const addItem = item => {
-		if (!item.id) {
-			setItems([...mapItems(items), {
-				...item,
-				date: new Date(item.date),
-				id: items?.length > 0 ? Math.max(...items.map(i => i.id)) + 1 : 1
-			}]);
-		} else {
-			setItems([...mapItems(items).map(i => {
-				if (i.id === item.id) {
-					return {
-						...item
-					};
-				}
-				return i;
-			})]);
-		}
-	};
-
-	const deleteItem = (id) => {
-		setItems([...items.filter(i => i.id !== id)]);
-	};
-
-	return (
-		<UserContextProvider>
-      <TagContextProvider items = {items}>
-        <div className='app'>
-          <LeftPanel>
-            <Header/>
-            <JournalAddButton clearForm={() => setSelectedItem(null)}/>
-            <JournalList items={mapItems(items)} setItem={setSelectedItem} />
-          </LeftPanel>
-          <Body>
-            <JournalForm onSubmit={addItem} onDelete={deleteItem} data={selectedItem}/>
-          </Body>
-        </div>
-      </TagContextProvider>
-		</UserContextProvider>
-	);
-}
+const App = () => {
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="dashboard/*" element={<Dashboard />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
+};
 
 export default App;

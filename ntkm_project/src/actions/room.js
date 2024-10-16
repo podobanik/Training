@@ -1,7 +1,7 @@
-import deleteImages from './utils/deleteImages';
-import fetchData from './utils/fetchData';
+import deleteImages from './utils/deleteImages.js';
+import fetchData from './utils/fetchData.js';
 
-const url = process.env.REACT_APP_SERVER_URL + '/room';
+const url = 'http://localhost:5174' + '/room';
 
 export const createRoom = async (room, currentUser, dispatch) => {
   dispatch({ type: 'START_LOADING' });

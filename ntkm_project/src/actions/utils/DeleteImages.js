@@ -1,4 +1,4 @@
-import deleteFile from '../../firebase/deleteFile';
+import deleteFile from '../../firebase/deleteFile.js';
 
 const deleteImages = async (images, userId) => {
   if (images.length > 0) {

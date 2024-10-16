@@ -1,8 +1,8 @@
-import fetchData from './utils/fetchData';
+import fetchData from './utils/fetchData.js';
 import { v4 as uuidv4 } from 'uuid';
-import uploadFile from '../firebase/uploadFile';
+import uploadFile from '../firebase/uploadFile.js';
 
-const url = process.env.REACT_APP_SERVER_URL + '/user';
+const url = 'http://localhost:5174' + '/user';
 
 export const register = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
