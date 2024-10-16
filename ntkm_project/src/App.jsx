@@ -1,13 +1,14 @@
 import './App.css';
-import Header from './components/Header/Header';
-import JournalAddButton from './components/JournalAddButton/JournalAddButton';
-import JournalForm from './components/JournalForm/JournalForm';
-import JournalList from './components/JournalList/JournalList';
+import Header from './components/JournalApp/Header/Header';
+import JournalAddButton from './components/JournalApp/JournalAddButton/JournalAddButton';
+import JournalForm from './components/JournalApp/JournalForm/JournalForm';
+import JournalList from './components/JournalApp/JournalList/JournalList';
 import Body from './layouts/Body/Body';
 import LeftPanel from './layouts/LeftPanel/LeftPanel';
 import { useLocalStorage } from './hooks/use-localstorage.hook';
 import { UserContextProvider } from './context/user.context';
 import { useState } from 'react';
+import { TagContextProvider } from './context/tag.context';
 
 function mapItems(items) {
 	if (!items) {
@@ -49,16 +50,18 @@ function App() {
 
 	return (
 		<UserContextProvider>
-			<div className='app'>
-				<LeftPanel>
-					<Header/>
-					<JournalAddButton clearForm={() => setSelectedItem(null)}/>
-					<JournalList items={mapItems(items)} setItem={setSelectedItem} />
-				</LeftPanel>
-				<Body>
-					<JournalForm onSubmit={addItem} onDelete={deleteItem} data={selectedItem}/>
-				</Body>
-			</div>
+      <TagContextProvider items = {items}>
+        <div className='app'>
+          <LeftPanel>
+            <Header/>
+            <JournalAddButton clearForm={() => setSelectedItem(null)}/>
+            <JournalList items={mapItems(items)} setItem={setSelectedItem} />
+          </LeftPanel>
+          <Body>
+            <JournalForm onSubmit={addItem} onDelete={deleteItem} data={selectedItem}/>
+          </Body>
+        </div>
+      </TagContextProvider>
 		</UserContextProvider>
 	);
 }

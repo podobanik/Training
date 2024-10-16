@@ -2,7 +2,8 @@ export const INITIAL_STATE = {
 	isValid: {
 		post: true,
 		title: true,
-		date: true
+		date: true,
+        tag:true
 	},
 	values: {
 		post: '',
@@ -25,14 +26,16 @@ export function formReducer(state, action) {
 		const titleValidity = state.values.title?.trim().length;
 		const postValidity = state.values.post?.trim().length;
 		const dateValidity = state.values.date;
+        const tagValidity = state.values.tag?.trim().length;
 		return {
 			...state,
 			isValid: {
 				post: postValidity,
 				title: titleValidity,
-				date: dateValidity
+				date: dateValidity,
+                tag: tagValidity
 			},
-			isFormReadyToSubmit: titleValidity && postValidity && dateValidity
+			isFormReadyToSubmit: titleValidity && postValidity && dateValidity && tagValidity
 		};
 	}
 	}

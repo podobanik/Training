@@ -4,7 +4,8 @@ import { useContext, useEffect, useReducer, useRef } from 'react';
 import cn from 'classnames';
 import { INITIAL_STATE, formReducer } from './JournalForm.state';
 import Input from '../Input/Input';
-import { UserContext } from '../../context/user.context';
+import { UserContext } from '../../../context/user.context';
+import { TagContext } from '../../../context/tag.context';
 
 function JournalForm({ onSubmit, data, onDelete }) {
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
@@ -12,7 +13,9 @@ function JournalForm({ onSubmit, data, onDelete }) {
 	const titleRef = useRef();
 	const dateRef = useRef();
 	const postRef = useRef();
+    const tagRef = useRef();
 	const { userId } = useContext(UserContext);
+    const { tagName } = useContext(TagContext)
 
 	const focusError = (isValid) => {
 		switch(true) {
@@ -25,20 +28,23 @@ function JournalForm({ onSubmit, data, onDelete }) {
 		case !isValid.post:
 			postRef.current.focus();
 			break;
+        case !isValid.tag:
+			tagRef.current.focus();
+			break;
 		}
 	};
 
 	useEffect(() => {
 		if (!data) {
 			dispatchForm({ type: 'CLEAR' });
-			dispatchForm({ type: 'SET_VALUE', payload: { userId }});
+			dispatchForm({ type: 'SET_VALUE', payload: { userId, tagName }});
 		}
 		dispatchForm({ type: 'SET_VALUE', payload: { ...data }});
 	}, [data]);
 
 	useEffect(() => {
 		let timerId;
-		if (!isValid.date || !isValid.post || !isValid.title) {
+		if (!isValid.date || !isValid.post || !isValid.title || !isValid.tag) {
 			focusError(isValid);
 			timerId = setTimeout(() => {
 				dispatchForm({ type: 'RESET_VALIDITY' });
@@ -89,14 +95,14 @@ function JournalForm({ onSubmit, data, onDelete }) {
 					<img src='/calendar.svg' alt='Иконка календаря'/>
 					<span>Дата</span>
 				</label>
-				<Input type='date' ref={dateRef} onChange={onChange} name='date' value={values.date ? new Date(values.date).toISOString().slice(0, 10) : ''} id="date" isValid={!isValid.title}/>
+				<Input type='date' ref={dateRef} onChange={onChange} name='date' value={values.date ? new Date(values.date).toISOString().slice(0, 10) : ''} id="date" isValid={!isValid.date}/>
 			</div>
 			<div className={styles['form-row']}>
 				<label htmlFor="tag" className={styles['form-label']}>
 					<img src='/folder.svg' alt='Иконка папки'/>
 					<span>Метки</span>
 				</label>
-				<Input type='text' onChange={onChange} id="tag" value={values.tag} name='tag' />
+				<Input type='text' ref={tagRef} onChange={onChange} id="tag" value={values.tag} name='tag' isValid={!isValid.tag}/>
 			</div>
 			<textarea ref={postRef} name="post" id="" onChange={onChange} value={values.post} cols="30" rows="10" className={cn(styles['input'], {
 				[styles['invalid']]: !isValid.post
