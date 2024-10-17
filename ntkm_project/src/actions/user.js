@@ -8,7 +8,7 @@ export const register = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
   const result = await fetchData(
-    { url: url + 'token/', body: user },
+    { url: url + 'register/', body: user },
     dispatch
   );
   if (result) {
@@ -19,7 +19,7 @@ export const register = async (user, dispatch) => {
       payload: {
         open: true,
         severity: 'success',
-        message: 'Your account has been created successfully',
+        message: 'Ваш аккаунт был успешно создан!',
       },
     });
   }
@@ -30,7 +30,7 @@ export const register = async (user, dispatch) => {
 export const login = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
-  const result = await fetchData({ url: url + '/login', body: user }, dispatch);
+  const result = await fetchData({ url: url + 'token/', body: user }, dispatch);
   if (result) {
     dispatch({ type: 'UPDATE_USER', payload: result });
     dispatch({ type: 'CLOSE_LOGIN' });
