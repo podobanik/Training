@@ -24,13 +24,10 @@ import {
 import MuiDrawer from '@mui/material/Drawer';
 import { useMemo, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import { storeRoom } from '../../actions/room.js';
 import { logout } from '../../actions/user.js';
 import { useValue } from '../../context/ContextProvider.jsx';
-import Main from './main/Main.jsx';
 import Messages from './messages/Messages.jsx';
 import Requests from './requests/Requests.jsx';
-import Rooms from './rooms/Rooms.jsx';
 import Users from './users/Users.jsx';
 import useCheckToken from '../../hooks/use-checktoken.hook.js';
 import isAdmin from './utils/IsAdmin.js';
@@ -121,12 +118,6 @@ const SideList = ({ open, setOpen }) => {
           ]
         : []),
 
-      {
-        title: 'Rooms',
-        icon: <KingBed />,
-        link: 'rooms',
-        component: <Rooms {...{ setSelectedLink, link: 'rooms' }} />,
-      },
       {
         title: 'Requests',
         icon: <NotificationsActive />,

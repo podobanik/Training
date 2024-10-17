@@ -12,7 +12,6 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { login, register } from '../../../actions/user.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
-import GoogleOneTapLogin from './GoogleOneTapLogin.jsx';
 import PasswordField from './PasswordField.jsx';
 
 const Login = () => {
@@ -20,9 +19,9 @@ const Login = () => {
     state: { openLogin },
     dispatch,
   } = useValue();
-  const [title, setTitle] = useState('Login');
+  const [title, setTitle] = useState('Авторизация');
   const [isRegister, setIsRegister] = useState(false);
-  const nameRef = useRef();
+  const userNameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
@@ -36,7 +35,7 @@ const Login = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     if (!isRegister) return login({ email, password }, dispatch);
-    const name = nameRef.current.value;
+    const username = userNameRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
     if (password !== confirmPassword)
       return dispatch({
@@ -44,14 +43,14 @@ const Login = () => {
         payload: {
           open: true,
           severity: 'error',
-          message: 'Passwords do not match',
+          message: 'Пароли не совпадают',
         },
       });
-    register({ name, email, password }, dispatch);
+    register({ name: username, email, password }, dispatch);
   };
 
   useEffect(() => {
-    isRegister ? setTitle('Register') : setTitle('Login');
+    isRegister ? setTitle('Регистрация') : setTitle('Авторизация');
   }, [isRegister]);
   return (
     <Dialog open={openLogin} onClose={handleClose}>
@@ -72,7 +71,7 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <DialogContent dividers>
           <DialogContentText>
-            Please fill your information in the fields below:
+            Пожалуйста заполните выделенные поля
           </DialogContentText>
           {isRegister && (
             <TextField
@@ -83,7 +82,7 @@ const Login = () => {
               label="Name"
               type="text"
               fullWidth
-              inputRef={nameRef}
+              inputRef={userNameRef}
               inputProps={{ minLength: 2 }}
               required
             />
@@ -110,20 +109,17 @@ const Login = () => {
         </DialogContent>
         <DialogActions sx={{ px: '19px' }}>
           <Button type="submit" variant="contained" endIcon={<Send />}>
-            Submit
+            Сохранить
           </Button>
         </DialogActions>
       </form>
       <DialogActions sx={{ justifyContent: 'left', p: '5px 24px' }}>
         {isRegister
-          ? 'Do you have an account? Sign in now '
-          : "Don't you have an account? Create one now "}
+          ? 'Уже есть аккаунт? Авторизуйтесь сейчас! '
+          : 'Нет аккаунта? Зарегистрируйтесь! '}
         <Button onClick={() => setIsRegister(!isRegister)}>
-          {isRegister ? 'Login' : 'Register'}
+          {isRegister ? 'Авторизация' : 'Регистрация'}
         </Button>
-      </DialogActions>
-      <DialogActions sx={{ justifyContent: 'center', py: '24px' }}>
-        <GoogleOneTapLogin />
       </DialogActions>
     </Dialog>
   );

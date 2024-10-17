@@ -2,7 +2,6 @@ import { Dashboard, Logout, Settings } from '@mui/icons-material';
 import { ListItemIcon, Menu, MenuItem } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { storeRoom } from '../../../actions/room.js';
 import { logout } from '../../../actions/user.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import useCheckToken from '../../../hooks/use-checktoken.hook.js';
@@ -14,12 +13,6 @@ const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
     dispatch,
     state: {
       currentUser,
-      location,
-      details,
-      images,
-      updatedRoom,
-      deletedImages,
-      addedImages,
     },
   } = useValue();
   const handleCloseUserMenu = () => {
@@ -29,39 +22,9 @@ const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    storeRoom(
-      location,
-      details,
-      images,
-      updatedRoom,
-      deletedImages,
-      addedImages,
-      currentUser.id
-    );
     logout(dispatch);
   };
 
-  useEffect(() => {
-    const storeBeforeLeave = (e) => {
-      if (
-        storeRoom(
-          location,
-          details,
-          images,
-          updatedRoom,
-          deletedImages,
-          addedImages,
-          currentUser.id
-        )
-      ) {
-        e.preventDefault();
-        e.returnValue = true;
-      }
-    };
-
-    window.addEventListener('beforeunload', storeBeforeLeave);
-    return () => window.removeEventListener('beforeunload', storeBeforeLeave);
-  }, [location, details, images]);
   return (
     <>
       <Menu
@@ -70,7 +33,6 @@ const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
         onClose={handleCloseUserMenu}
         onClick={handleCloseUserMenu}
       >
-        {!currentUser.google && (
           <MenuItem
             onClick={() =>
               dispatch({
@@ -86,20 +48,19 @@ const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
-            Profile
+            Профиль
           </MenuItem>
-        )}
         <MenuItem onClick={() => navigate('dashboard')}>
           <ListItemIcon>
             <Dashboard fontSize="small" />
           </ListItemIcon>
-          Dashboard
+          Панель инструментов
         </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Выход
         </MenuItem>
       </Menu>
       <Profile />

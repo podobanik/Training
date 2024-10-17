@@ -43,7 +43,7 @@ const Profile = () => {
   return (
     <Dialog open={profile.open} onClose={handleClose}>
       <DialogTitle>
-        Profile
+        Профиль
         <IconButton
           sx={{
             position: 'absolute',
@@ -59,7 +59,7 @@ const Profile = () => {
       <form onSubmit={handleSubmit}>
         <DialogContent dividers>
           <DialogContentText>
-            You can update your profile by updating these fields:
+            Вы можете дополнить информацию о себе, заполнив поля ниже:
           </DialogContentText>
 
           <TextField
@@ -73,7 +73,7 @@ const Profile = () => {
             inputRef={nameRef}
             inputProps={{ minLength: 2 }}
             required
-            defaultValue={currentUser?.name}
+            defaultValue={currentUser?.username}
           />
           <label htmlFor="profilePhoto">
             <input

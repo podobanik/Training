@@ -2,13 +2,13 @@ import fetchData from './utils/fetchData.js';
 import { v4 as uuidv4 } from 'uuid';
 import uploadFile from '../firebase/uploadFile.js';
 
-const url = 'http://localhost:5174' + '/user';
+const url = 'http://localhost:8000/';
 
 export const register = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
   const result = await fetchData(
-    { url: url + '/register', body: user },
+    { url: url + 'token/', body: user },
     dispatch
   );
   if (result) {
@@ -116,6 +116,5 @@ export const updateStatus = (updatedFields, userId, dispatch, currentUser) => {
 
 export const logout = (dispatch) => {
   dispatch({ type: 'UPDATE_USER', payload: null });
-  dispatch({ type: 'RESET_ROOM' });
   dispatch({ type: 'UPDATE_USERS', payload: [] });
 };

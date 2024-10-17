@@ -12,8 +12,8 @@ import { Brightness4, Brightness7, Home, Menu } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideList from './SideList.jsx';
-import Protected from '../../components/TaskApp/protected/Protected.jsx';
-import Login from '../../components/TaskApp/user/Login.jsx';
+import Protected from '../../components/UserApp/protected/Protected.jsx';
+import Login from '../../components/UserApp/user/Login.jsx';
 
 const drawerWidth = 240;
 
