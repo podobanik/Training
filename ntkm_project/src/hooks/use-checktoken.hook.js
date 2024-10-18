@@ -12,7 +12,8 @@ const useCheckToken = () => {
   } = useValue();
   useEffect(() => {
     if (currentUser) {
-      const decodedToken = jwtDecode(currentUser.token);
+      console.log(currentUser.access);
+      const decodedToken = jwtDecode(currentUser.access);
       if (decodedToken.exp * 1000 < new Date().getTime()) {
         logout(dispatch);
       }

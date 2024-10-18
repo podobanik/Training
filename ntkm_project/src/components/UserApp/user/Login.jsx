@@ -28,6 +28,7 @@ const Login = () => {
 
   const handleClose = () => {
     dispatch({ type: 'CLOSE_LOGIN' });
+    setIsRegister(false);
   };
 
   const handleSubmit = (e) => {
@@ -46,7 +47,8 @@ const Login = () => {
           message: 'Пароли не совпадают',
         },
       });
-    register({ name: username, email, password }, dispatch);
+    register({ username: username, email: email, password: password }, dispatch);
+    setIsRegister(false);
   };
 
   useEffect(() => {
@@ -78,8 +80,8 @@ const Login = () => {
               autoFocus
               margin="normal"
               variant="standard"
-              id="name"
-              label="Name"
+              id="username"
+              label="username"
               type="text"
               fullWidth
               inputRef={userNameRef}
@@ -115,7 +117,7 @@ const Login = () => {
       </form>
       <DialogActions sx={{ justifyContent: 'left', p: '5px 24px' }}>
         {isRegister
-          ? 'Уже есть аккаунт? Авторизуйтесь сейчас! '
+          ? 'Уже есть аккаунт? Авторизуйтесь! '
           : 'Нет аккаунта? Зарегистрируйтесь! '}
         <Button onClick={() => setIsRegister(!isRegister)}>
           {isRegister ? 'Авторизация' : 'Регистрация'}

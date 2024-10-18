@@ -8,6 +8,7 @@ import {
   DialogTitle,
   IconButton,
   TextField,
+  Switch,
 } from '@mui/material';
 import { Close, Send } from '@mui/icons-material';
 import { useValue } from '../../../context/ContextProvider.jsx';
@@ -16,13 +17,16 @@ import { updateProfile } from '../../../actions/user.js';
 
 const Profile = () => {
   const {
-    state: { profile, currentUser },
+    state: { profile, userInfo },
     dispatch,
   } = useValue();
-  const nameRef = useRef();
+  const userNameRef = useRef();
+  const isActiveRef = useRef();
+  const isStaffRef = useRef();
 
   const handleClose = () => {
     dispatch({ type: 'UPDATE_PROFILE', payload: { ...profile, open: false } });
+    dispatch({ type: 'UPDATE_USER_INFO', payload: userInfo });
   };
 
   const handleChange = (e) => {
@@ -37,8 +41,10 @@ const Profile = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    const name = nameRef.current.value;
-    updateProfile(currentUser, { name, file: profile.file }, dispatch);
+    const username = userNameRef.current.value;
+    const is_active = isActiveRef.current.value;
+    const is_staff = isStaffRef.current.value;
+    updateProfile(userInfo, { username, is_active, is_staff, file: profile.file }, dispatch);
   };
   return (
     <Dialog open={profile.open} onClose={handleClose}>
@@ -66,14 +72,28 @@ const Profile = () => {
             autoFocus
             margin="normal"
             variant="standard"
-            id="name"
-            label="Name"
+            id="username"
+            label="Логин пользователя"
             type="text"
             fullWidth
-            inputRef={nameRef}
+            inputRef={userNameRef}
             inputProps={{ minLength: 2 }}
             required
-            defaultValue={currentUser?.username}
+            defaultValue={userInfo?.username}
+          />
+          <Switch
+            id="is_active"
+            label="Активный пользователь"
+            inputRef={isActiveRef}
+            defaultChecked = {userInfo?.is_active}
+            inputProps={{ 'aria-label': 'controlled' }}
+          />
+          <Switch
+            id="is_staff"
+            label="Суперпользователь"
+            inputRef={isStaffRef}
+            defaultChecked = {userInfo?.is_staff}
+            inputProps={{ 'aria-label': 'controlled' }}
           />
           <label htmlFor="profilePhoto">
             <input
@@ -91,7 +111,7 @@ const Profile = () => {
         </DialogContent>
         <DialogActions sx={{ px: '19px' }}>
           <Button type="submit" variant="contained" endIcon={<Send />}>
-            Update
+            Обновить
           </Button>
         </DialogActions>
       </form>

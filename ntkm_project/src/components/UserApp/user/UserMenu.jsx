@@ -8,7 +8,7 @@ import useCheckToken from '../../../hooks/use-checktoken.hook.js';
 import Profile from './Profile.jsx';
 
 const UserMenu = ({ anchorUserMenu, setAnchorUserMenu }) => {
-  useCheckToken();
+  //useCheckToken();
   const {
     dispatch,
     state: {

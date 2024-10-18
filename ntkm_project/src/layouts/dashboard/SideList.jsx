@@ -26,11 +26,7 @@ import { useMemo, useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { logout } from '../../actions/user.js';
 import { useValue } from '../../context/ContextProvider.jsx';
-import Messages from './messages/Messages.jsx';
-import Requests from './requests/Requests.jsx';
 import Users from './users/Users.jsx';
-import useCheckToken from '../../hooks/use-checktoken.hook.js';
-import isAdmin from './utils/IsAdmin.js';
 import MainJournals from './journals/MainJournals.jsx';
 
 const drawerWidth = 240;
@@ -83,16 +79,10 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideList = ({ open, setOpen }) => {
-  useCheckToken();
+  //useCheckToken();
   const {
     state: {
       currentUser,
-      location,
-      details,
-      images,
-      updatedRoom,
-      deletedImages,
-      addedImages,
     },
     dispatch,
   } = useValue();
@@ -101,34 +91,17 @@ const SideList = ({ open, setOpen }) => {
 
   const list = useMemo(
     () => [
-      ...(isAdmin(currentUser)
-        ? [
-            {
-              title: 'Main',
-              icon: <Dashboard />,
-              link: '',
-              component: <Main {...{ setSelectedLink, link: '' }} />,
-            },
-            {
-              title: 'Users',
-              icon: <PeopleAlt />,
-              link: 'users',
-              component: <Users {...{ setSelectedLink, link: 'users' }} />,
-            },
-          ]
-        : []),
-
       {
-        title: 'Requests',
-        icon: <NotificationsActive />,
-        link: 'requests',
-        component: <Requests {...{ setSelectedLink, link: 'requests' }} />,
+        title: 'Users',
+        icon: <PeopleAlt />,
+        link: 'users',
+        component: <Users {...{ setSelectedLink, link: 'users' }} />,
       },
       {
-        title: 'Messages',
+        title: 'MainJournals',
         icon: <MarkChatUnread />,
-        link: 'messages',
-        component: <Messages {...{ setSelectedLink, link: 'messages' }} />,
+        link: 'journals',
+        component: <MainJournals {...{ setSelectedLink, link: 'journals' }} />,
       },
     ],
     [currentUser]
@@ -137,15 +110,6 @@ const SideList = ({ open, setOpen }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    storeRoom(
-      location,
-      details,
-      images,
-      updatedRoom,
-      deletedImages,
-      addedImages,
-      currentUser.id
-    );
     logout(dispatch);
   };
   return (

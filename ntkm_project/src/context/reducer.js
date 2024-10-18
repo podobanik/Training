@@ -20,6 +20,10 @@ const reducer = (state, action) => {
       localStorage.setItem('currentUser', JSON.stringify(action.payload));
       return { ...state, currentUser: action.payload };
 
+    case 'UPDATE_USER_INFO':
+      localStorage.setItem('userInfo', JSON.stringify(action.payload));
+      return { ...state, userInfo: action.payload };
+
     case 'UPDATE_IMAGES':
       return { ...state, images: [...state.images, ...action.payload] };
     case 'DELETE_IMAGE':

@@ -1,18 +1,22 @@
-import fetchData from './utils/fetchData.js';
+import getToken from './utils/getToken.js';
+import registerUser from './utils/registerUser.js';
 import { v4 as uuidv4 } from 'uuid';
 import uploadFile from '../firebase/uploadFile.js';
+import getUserInfo from './utils/getUserInfo.js';
+import getUserId from './utils/getUserId.js';
+import axios from 'axios';
+
 
 const url = 'http://localhost:8000/';
 
 export const register = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
-  const result = await fetchData(
+  const result = await registerUser(
     { url: url + 'register/', body: user },
     dispatch
   );
   if (result) {
-    dispatch({ type: 'UPDATE_USER', payload: result });
     dispatch({ type: 'CLOSE_LOGIN' });
     dispatch({
       type: 'UPDATE_ALERT',
@@ -30,35 +34,37 @@ export const register = async (user, dispatch) => {
 export const login = async (user, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
-  const result = await fetchData({ url: url + 'token/', body: user }, dispatch);
+  const result = await getToken({ url: url + 'token/', body: user }, dispatch);
+  const userId = await getUserId({ url: url + 'auth/users/me/', body: result.access}, dispatch)
+  const userInfo = await getUserInfo({ url: url + 'users/' + userId, body: result.access}, dispatch)
   if (result) {
     dispatch({ type: 'UPDATE_USER', payload: result });
+    dispatch({ type: 'UPDATE_USER_INFO', payload: userInfo });
     dispatch({ type: 'CLOSE_LOGIN' });
   }
 
   dispatch({ type: 'END_LOADING' });
 };
 
-export const updateProfile = async (currentUser, updatedFields, dispatch) => {
+export const updateProfile = async (userInfo, updatedFields, dispatch) => {
   dispatch({ type: 'START_LOADING' });
 
-  const { name, file } = updatedFields;
-  let body = { name };
+  const { username, is_active, is_staff, file } = updatedFields;
+  let body = { username, is_active, is_staff };
   try {
     if (file) {
       const imageName = uuidv4() + '.' + file?.name?.split('.')?.pop();
       const photoURL = await uploadFile(
         file,
-        `profile/${currentUser?.id}/${imageName}`
+        `profile/${userInfo?.id}/${imageName}`
       );
       body = { ...body, photoURL };
     }
-    const result = await fetchData(
+    const result = await axios.patch(
       {
         url: url + '/updateProfile',
-        method: 'PATCH',
         body,
-        token: currentUser.token,
+        token: currentUser.access,
       },
       dispatch
     );
@@ -116,5 +122,6 @@ export const updateStatus = (updatedFields, userId, dispatch, currentUser) => {
 
 export const logout = (dispatch) => {
   dispatch({ type: 'UPDATE_USER', payload: null });
+  dispatch({ type: 'UPDATE_USER_INFO', payload: {} });
   dispatch({ type: 'UPDATE_USERS', payload: [] });
 };

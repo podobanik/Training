@@ -23,7 +23,6 @@ function mapItems(items) {
 function MainJournals() {
 	const [items, setItems] = useLocalStorage('data');
 	const [selectedItem, setSelectedItem] = useState(null);
-	console.log('App');
 
 	const addItem = item => {
 		if (!item.id) {
