@@ -7,14 +7,16 @@ import {
 import reducer from './reducer';
 
 const initialState = {
-  currentUser: {},
+  currentUser: null,
   openLogin: false,
   loading: false,
   alert: { open: false, severity: 'info', message: '' },
-  profile: { open: false, file: null, photoURL: '' },
+  profile: { open: false },
   users: [],
-  section: 0,
-  userInfo: {},
+  problems: [],
+  journals: [],
+  folders: [],
+  userInfo: null,
 };
 
 const Context = createContext(initialState);

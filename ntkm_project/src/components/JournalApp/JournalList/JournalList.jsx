@@ -1,15 +1,18 @@
 import './JournalList.css';
 import CardButton from '../CardButton/CardButton';
 import JournalItem from '../JournalItem/JournalItem';
-import { useContext, useMemo } from 'react';
-import { UserContext } from '../../../context/user.context';
-import { TagContext } from '../../../context/tag.context';
+import { useMemo } from 'react';
+import { useValue } from '../../../context/ContextProvider';
 
-function JournalList({ items, setItem }) {
-	const { userId } = useContext(UserContext);
-  const { tagName } = useContext(TagContext);
 
-	const sortItems = (a, b) => {
+function JournalList({ journals, setSelectedItem }) {
+	
+	const {
+    state: { userInfo }
+  	} = useValue();
+
+
+	const sortJournals = (a, b) => {
 		if (a.date < b.date) {
 			return 1;
 		} else {
@@ -17,23 +20,26 @@ function JournalList({ items, setItem }) {
 		}
 	};
 	
-	const filteredItems = useMemo(() => items
-		.filter(el => (el.userId === userId))
-		.sort(sortItems), [items, userId]);
+	const filteredJournals = useMemo(() => journals
+		.filter(el => (el.user.id === userInfo.id))
+		.sort(sortJournals), [journals, userInfo]);
 
-	if (items.length === 0) {
+	if (journals.length === 0) {
 		return <p>Записей пока нет, добавьте первую</p>;
 	}
 	
 
 	return	<>
-		{filteredItems
+		{filteredJournals
 			.map(el => (
-				<CardButton key={el.id} onClick={() => setItem(el)}>
+				<CardButton key={el.id} onClick={() => setSelectedItem(el)}>
 					<JournalItem 
 						title={el.title}
 						post={el.post}
-						date={el.date}
+						add_date={el.add_date}
+						change_date={el.change_date}
+						folder={el.folder?.name}
+						user={`${el.user?.profile?.last_name} ${el.user?.profile?.first_name} ${el.user?.profile?.second_name}`}
 					/>
 				</CardButton>
 			))}

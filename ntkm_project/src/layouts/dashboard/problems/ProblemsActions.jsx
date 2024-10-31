@@ -2,10 +2,10 @@ import { Box, CircularProgress, Fab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Check, Save } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
-import { getUsers, updateUserItem } from '../../../actions/user.js';
+import { getProblems, updateProblems } from '../../../actions/problem.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
 
-const UsersActions = ({ params, rowId, setRowId }) => {
+const ProblemsActions = ({ params, rowId, setRowId }) => {
   const {
     dispatch,
     state: { currentUser },
@@ -16,9 +16,9 @@ const UsersActions = ({ params, rowId, setRowId }) => {
   const handleSubmit = async () => {
     setLoading(true);
 
-    const { username, is_superuser, id } = params.row;
-    const result = await updateUserItem(
-      { is_superuser, username },
+    const { problem_status, problem_text, id, control_date } = params.row;
+    const result = await updateProblems(
+      { problem_status, problem_text, control_date },
       id,
       dispatch,
       currentUser
@@ -29,7 +29,7 @@ const UsersActions = ({ params, rowId, setRowId }) => {
       // const user = users.find(user=>user._id === _id)
       // user.role = role
       // user.active = active
-      getUsers(dispatch, currentUser);
+      getProblems(dispatch, currentUser);
     }
     setLoading(false);
   };
@@ -86,4 +86,4 @@ const UsersActions = ({ params, rowId, setRowId }) => {
   );
 };
 
-export default UsersActions;
+export default ProblemsActions;

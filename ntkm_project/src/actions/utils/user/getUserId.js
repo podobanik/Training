@@ -8,8 +8,6 @@ const getUserId = async (
   try {
     const response = await axios.get(url, { headers: headers });
     if (!response.status === 200) {
-      if (response.status === 401)
-        dispatch({ type: 'UPDATE_USER_ID', payload: null });
       throw new Error(response.statusText);
     }
     return response.data.id;

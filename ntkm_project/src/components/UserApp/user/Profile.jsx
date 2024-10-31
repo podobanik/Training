@@ -90,9 +90,16 @@ const Profile = () => {
           />
           <Switch
             id="is_staff"
-            label="Суперпользователь"
+            label="Админ"
             inputRef={isStaffRef}
             defaultChecked = {userInfo?.is_staff}
+            inputProps={{ 'aria-label': 'controlled' }}
+          />
+          <Switch
+            id="is_staff"
+            label="Суперпользователь"
+            inputRef={isSuperUserRef}
+            defaultChecked = {userInfo?.is_superuser}
             inputProps={{ 'aria-label': 'controlled' }}
           />
           <label htmlFor="profilePhoto">

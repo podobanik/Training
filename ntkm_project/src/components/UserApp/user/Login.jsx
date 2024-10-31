@@ -8,6 +8,7 @@ import {
   DialogTitle,
   IconButton,
   TextField,
+  Switch,
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { login, register } from '../../../actions/user.js';
@@ -25,6 +26,9 @@ const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
+  const isActiveRef = useRef();
+  const isStaffRef = useRef();
+  const isSuperUserRef = useRef();
 
   const handleClose = () => {
     dispatch({ type: 'CLOSE_LOGIN' });
@@ -38,6 +42,9 @@ const Login = () => {
     if (!isRegister) return login({ email, password }, dispatch);
     const username = userNameRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
+    const is_active = isActiveRef.current.value;
+    const is_staff = isStaffRef.current.value;
+    const is_superuser = isSuperUserRef.current.value;
     if (password !== confirmPassword)
       return dispatch({
         type: 'UPDATE_ALERT',
@@ -47,7 +54,7 @@ const Login = () => {
           message: 'Пароли не совпадают',
         },
       });
-    register({ username: username, email: email, password: password }, dispatch);
+    register({ username: username, email: email, password: password, is_active: is_active, is_staff: is_staff, is_superuser: is_superuser }, dispatch);
     setIsRegister(false);
   };
 
@@ -81,7 +88,7 @@ const Login = () => {
               margin="normal"
               variant="standard"
               id="username"
-              label="username"
+              label="Логин"
               type="text"
               fullWidth
               inputRef={userNameRef}
@@ -94,7 +101,7 @@ const Login = () => {
             margin="normal"
             variant="standard"
             id="email"
-            label="Email"
+            label="Адрес электронной почты"
             type="email"
             fullWidth
             inputRef={emailRef}
@@ -105,13 +112,22 @@ const Login = () => {
             <PasswordField
               passwordRef={confirmPasswordRef}
               id="confirmPassword"
-              label="Confirm Password"
+              label="Подтвердите пароль"
             />
+          )}
+          {isRegister && (
+            <Switch inputRef={isActiveRef} inputProps={{ 'aria-label': 'Активный пользователь' }} label="Активный пользователь" />
+          )}
+          {isRegister && (
+            <Switch inputRef={isStaffRef} inputProps={{ 'aria-label': 'Администратор' }} label="Администратор" />
+          )}
+          {isRegister && (
+            <Switch inputRef={isSuperUserRef} inputProps={{ 'aria-label': 'Суперпользователь' }} label="Суперпользователь" />
           )}
         </DialogContent>
         <DialogActions sx={{ px: '19px' }}>
           <Button type="submit" variant="contained" endIcon={<Send />}>
-            Сохранить
+            Авторизоваться
           </Button>
         </DialogActions>
       </form>

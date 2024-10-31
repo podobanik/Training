@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 const PasswordField = ({
   passwordRef,
   id = 'password',
-  label = 'Password',
+  label = 'Пароль',
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 

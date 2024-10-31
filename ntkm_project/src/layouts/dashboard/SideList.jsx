@@ -1,12 +1,10 @@
 import {
   ChevronLeft,
-  Dashboard,
-  KingBed,
   Logout,
-  MarkChatUnread,
-  NotificationsActive,
   PeopleAlt,
 } from '@mui/icons-material';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import ChecklistIcon from '@mui/icons-material/Checklist';
 import {
   Avatar,
   Box,
@@ -27,7 +25,9 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { logout } from '../../actions/user.js';
 import { useValue } from '../../context/ContextProvider.jsx';
 import Users from './users/Users.jsx';
-import MainJournals from './journals/MainJournals.jsx';
+import Journals from './journals/Journals.jsx';
+import Problems from './problems/Problems.jsx';
+import useCheckToken from '../../hooks/useCheckToken.js';
 
 const drawerWidth = 240;
 
@@ -79,10 +79,10 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideList = ({ open, setOpen }) => {
-  //useCheckToken();
+  useCheckToken();
   const {
     state: {
-      currentUser,
+      userInfo,
     },
     dispatch,
   } = useValue();
@@ -92,19 +92,27 @@ const SideList = ({ open, setOpen }) => {
   const list = useMemo(
     () => [
       {
-        title: 'Users',
-        icon: <PeopleAlt />,
-        link: 'users',
-        component: <Users {...{ setSelectedLink, link: 'users' }} />,
+        title: 'Задачи отдела',
+        icon: <ChecklistIcon />,
+        link: 'problems',
+        component: <Problems {...{ setSelectedLink, link: 'problems' }} />,
       },
       {
-        title: 'MainJournals',
-        icon: <MarkChatUnread />,
+        title: 'Заметки',
+        icon: <ListAltIcon />,
         link: 'journals',
-        component: <MainJournals {...{ setSelectedLink, link: 'journals' }} />,
+        component: <Journals {...{ setSelectedLink, link: 'journals' }} />,
       },
+      (userInfo?.is_superuser === true
+        ? {
+              title: 'Сотрудники отдела',
+              icon: <PeopleAlt />,
+              link: 'users',
+              component: <Users {...{ setSelectedLink, link: 'users' }} />,
+            }
+        : {}),
     ],
-    [currentUser]
+    [userInfo]
   );
 
   const navigate = useNavigate();
@@ -152,20 +160,20 @@ const SideList = ({ open, setOpen }) => {
         </List>
         <Divider />
         <Box sx={{ mx: 'auto', mt: 3, mb: 1 }}>
-          <Tooltip title={currentUser?.name || ''}>
+          <Tooltip title={`${userInfo?.profile?.last_name} ${userInfo?.profile?.first_name} ${userInfo?.profile?.second_name}` || ''}>
             <Avatar
-              src={currentUser?.photoURL}
+              src={userInfo?.profile?.photoURL}
               {...(open && { sx: { width: 100, height: 100 } })}
             />
           </Tooltip>
         </Box>
         <Box sx={{ textAlign: 'center' }}>
-          {open && <Typography>{currentUser?.name}</Typography>}
-          <Typography variant="body2">{currentUser?.role || 'role'}</Typography>
+          {open && <Typography>{`${userInfo?.profile?.last_name} ${userInfo?.profile?.first_name} ${userInfo?.profile?.second_name}`}</Typography>}
+          {open && <Typography variant="body2">{userInfo?.is_superuser ? 'Администратор' : ''}</Typography>}
           {open && (
-            <Typography variant="body2">{currentUser?.email}</Typography>
+            <Typography variant="body2">{userInfo?.email}</Typography>
           )}
-          <Tooltip title="Logout" sx={{ mt: 1 }}>
+          <Tooltip title="Выход" sx={{ mt: 1 }}>
             <IconButton onClick={handleLogout}>
               <Logout />
             </IconButton>
@@ -181,10 +189,10 @@ const SideList = ({ open, setOpen }) => {
           <Route
             path="*"
             element={
-              isAdmin(currentUser) ? (
-                <Main {...{ setSelectedLink, link: '' }} />
+              (userInfo?.is_superuser === true) ? (
+                <Users {...{ setSelectedLink, link: 'users' }} />
               ) : (
-                <Rooms {...{ setSelectedLink, link: 'rooms' }} />
+                <Journals {...{ setSelectedLink, link: 'journals' }} />
               )
             }
           />

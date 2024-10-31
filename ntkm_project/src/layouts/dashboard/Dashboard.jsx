@@ -8,12 +8,13 @@ import {
   Tooltip,
 } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
-import { Brightness4, Brightness7, Home, Menu } from '@mui/icons-material';
+import { Brightness4, Brightness7, Menu } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideList from './SideList.jsx';
-import Protected from '../../components/UserApp/protected/Protected.jsx';
 import Login from '../../components/UserApp/user/Login.jsx';
+import Notification from '../../components/UserApp/Notification.jsx'
+import Protected from '../../components/UserApp/protected/Protected.jsx';
 
 const drawerWidth = 240;
 
@@ -57,44 +58,41 @@ export default function Dashboard() {
   return (
     <ThemeProvider theme={darkTheme}>
       <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: 5,
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <Menu />
-            </IconButton>
-            <Tooltip title="Go back to home page">
-              <IconButton sx={{ mr: 1 }} onClick={() => navigate('/')}>
-                <Home />
+          <CssBaseline />
+          <AppBar position="fixed" open={open}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: 5,
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <Menu />
               </IconButton>
-            </Tooltip>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1 }}
-            >
-              Dashboard
-            </Typography>
-            <IconButton onClick={() => setDark(!dark)}>
-              {dark ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Protected>
-          <SideList {...{ open, setOpen }} />
-        </Protected>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ flexGrow: 1 }}
+              >
+                Учёт работ ОСПАС
+              </Typography>
+              <IconButton onClick={() => setDark(!dark)}>
+                {dark ? <Brightness7 /> : <Brightness4 />}
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <Protected>
+            <SideList {...{ open, setOpen }} />
+          </Protected>
+          
       </Box>
       <Login />
+      <Notification />
     </ThemeProvider>
   );
 }

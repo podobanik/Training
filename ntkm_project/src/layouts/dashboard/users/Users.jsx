@@ -9,7 +9,7 @@ import UsersActions from './UsersActions.jsx';
 
 const Users = ({ setSelectedLink, link }) => {
   const {
-    state: { users, currentUser },
+    state: { users, currentUser},
     dispatch,
   } = useValue();
 
@@ -18,47 +18,80 @@ const Users = ({ setSelectedLink, link }) => {
 
   useEffect(() => {
     setSelectedLink(link);
-    if (users.length === 0) getUsers(dispatch, currentUser);
+    if (users.length === 0 && currentUser) getUsers(dispatch, currentUser);
   }, []);
 
   const columns = useMemo(
     () => [
       {
+        field: 'id',
+        headerName: '№',
+        width:40,
+        sortable: true,
+        filterable: true,
+      },
+      {
         field: 'photoURL',
-        headerName: 'Avatar',
+        headerName: 'Фото',
         width: 60,
-        renderCell: (params) => <Avatar src={params.row.photoURL} />,
+        renderCell: (params) => {
+          params.row.profile ? 
+          <Avatar src={params.row.profile.photoURL} /> 
+          : <Avatar src={'http://localhost:8000/images/profile.jpeg'} />
+        },
         sortable: false,
         filterable: false,
       },
-      { field: 'name', headerName: 'Name', width: 170 },
-      { field: 'email', headerName: 'Email', width: 200 },
       {
-        field: 'role',
-        headerName: 'Role',
-        width: 100,
-        type: 'singleSelect',
-        valueOptions: ['basic', 'editor', 'admin'],
-        editable: currentUser?.role === 'admin',
+        field: 'username',
+        headerName: 'Логин',
+        width: 170,
+        type: 'text',
+        renderCell: (params) =>
+          (params.row.username),
+        sortable: true,
+        filterable: true,
+        editable: true,
       },
       {
-        field: 'active',
-        headerName: 'Active',
-        width: 100,
-        type: 'boolean',
-        editable: currentUser?.role === 'admin',
-      },
-      {
-        field: 'createdAt',
-        headerName: 'Created At',
+        field: 'email',
+        headerName: 'Адрес электронной почты',
         width: 200,
         renderCell: (params) =>
-          moment(params.row.createdAt).format('YYYY-MM-DD HH:MM:SS'),
+          (params.row.email),
+        sortable: true,
+        filterable: true,
       },
-      { field: '_id', headerName: 'Id', width: 220 },
+      {
+        field: 'name',
+        headerName: 'ФИО',
+        width: 300,
+        type: 'text',
+        renderCell: (params) =>
+          (params.row.profile ? `${params.row.profile.last_name} ${params.row.profile.first_name} ${params.row.profile.second_name}` : ''),
+        sortable: true,
+        filterable: true,
+      },
+      {
+        field: 'is_superuser',
+        headerName: 'Администратор',
+        width: 100,
+        type: 'singleSelect',
+        valueOptions: [true, false],
+        renderCell: (params) =>
+          (params.row.is_superuser ? 'Да' : 'Нет'),
+        editable: true,
+      },
+      {
+        field: 'date_joined',
+        headerName: 'Дата создания',
+        width: 200,
+        renderCell: (params) =>
+          moment(params.row.date_joined).format('DD.MM.YYYY HH:MM'),
+      },
       {
         field: 'actions',
-        headerName: 'Actions',
+        headerName: 'Действия',
         type: 'actions',
         renderCell: (params) => (
           <UsersActions {...{ params, rowId, setRowId }} />
@@ -71,7 +104,7 @@ const Users = ({ setSelectedLink, link }) => {
   return (
     <Box
       sx={{
-        height: 400,
+        height: '100%',
         width: '100%',
       }}
     >
@@ -80,12 +113,12 @@ const Users = ({ setSelectedLink, link }) => {
         component="h3"
         sx={{ textAlign: 'center', mt: 3, mb: 3 }}
       >
-        Manage Users
+        Список сотрудников
       </Typography>
       <DataGrid
         columns={columns}
         rows={users}
-        getRowId={(row) => row._id}
+        getRowId={(row) => row.id}
         rowsPerPageOptions={[5, 10, 20]}
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

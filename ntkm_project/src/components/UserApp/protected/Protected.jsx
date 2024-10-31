@@ -6,7 +6,8 @@ const Protected = ({ children }) => {
   const {
     state: { currentUser },
   } = useValue();
-  return currentUser ? children : <AccessMessage />;
+  
+    return !currentUser || currentUser===undefined ? <AccessMessage /> : children;
 };
 
 export default Protected;
