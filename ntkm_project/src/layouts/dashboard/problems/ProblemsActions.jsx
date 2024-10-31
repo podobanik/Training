@@ -2,7 +2,7 @@ import { Box, CircularProgress, Fab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Check, Save } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
-import { getProblems, updateProblems } from '../../../actions/problem.js';
+import { getProblems, updateProblemItem } from '../../../actions/problem.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
 
 const ProblemsActions = ({ params, rowId, setRowId }) => {
@@ -17,7 +17,7 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
     setLoading(true);
 
     const { problem_status, problem_text, id, control_date } = params.row;
-    const result = await updateProblems(
+    const result = await updateProblemItem(
       { problem_status, problem_text, control_date },
       id,
       dispatch,

@@ -5,10 +5,10 @@ import { useMemo } from 'react';
 import { useValue } from '../../../context/ContextProvider';
 
 
-function JournalList({ journals, setSelectedItem }) {
+function JournalList({ setSelectedItem }) {
 	
 	const {
-    state: { userInfo }
+    state: { journals, folders, userInfo }
   	} = useValue();
 
 

@@ -1,6 +1,6 @@
 import styles from './JournalForm.module.css';
 import Button from '../Button/Button';
-import { useContext, useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import cn from 'classnames';
 import { INITIAL_STATE, formReducer } from './JournalForm.state';
 import Input from '../Input/Input';
@@ -8,7 +8,7 @@ import { useValue } from '../../../context/ContextProvider';
 
 function JournalForm({ onSubmit, data, onDelete }) {
 	const {
-    state: { userInfo }
+    state: { folders, userInfo }
   	} = useValue();
 	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
 	const { isValid, isFormReadyToSubmit, values } = formState;
@@ -49,10 +49,11 @@ function JournalForm({ onSubmit, data, onDelete }) {
 
 	useEffect(() => {
 		if (isFormReadyToSubmit) {
+			values.user = userInfo.id
 			onSubmit(values);
 			dispatchForm({ type: 'CLEAR' });
 		}
-	}, [isFormReadyToSubmit, values, onSubmit]);
+	}, [isFormReadyToSubmit, values, onSubmit, userInfo]);
 
 	const onChange = (e) => {
 		dispatchForm({ type: 'SET_VALUE', payload: { [e.target.name]: e.target.value }});
@@ -76,12 +77,16 @@ function JournalForm({ onSubmit, data, onDelete }) {
 					<img src="/archive.svg" alt="Кнопка удалить" />
 				</button>}
 			</div>
-			<div className={styles['form-row']}>
-				<label htmlFor="tag" className={styles['form-label']}>
-					<img src='/folder.svg' alt='Иконка папки'/>
-					<span>Метки</span>
-				</label>
-				<Input type='text' ref={tagRef} onChange={onChange} id="tag" value={values.tag} name='tag' isValid={!isValid.tag}/>
+			<div>
+				<select className={styles['form-row']} name="tag" id="tag" onChange={onChange}>
+					<label htmlFor="tag" className={styles['form-label']}>
+						<img src='/folder.svg' alt='Иконка папки'/>
+						<span>Папка</span>
+					</label>
+            		{folders?.map((folder) => (
+                		<option key={folder.id} value={folder.id}>{folder.name}</option>
+            		))}
+				</select>
 			</div>
 			<textarea ref={postRef} name="post" id="" onChange={onChange} value={values.post} cols="30" rows="10" className={cn(styles['input'], {
 				[styles['invalid']]: !isValid.post

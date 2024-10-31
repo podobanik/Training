@@ -10,6 +10,7 @@ import { getJournals } from '../../../actions/journal.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import { addJournalItem } from '../../../actions/journal.js';
 import { removeJournalItem } from '../../../actions/journal.js';
+import { getFolders } from '../../../actions/folder.js';
 
 
 const Journals = ({ setSelectedLink, link }) => {
@@ -24,6 +25,7 @@ const Journals = ({ setSelectedLink, link }) => {
 	useEffect(() => {
     setSelectedLink(link);
     if (journals.length === 0 && currentUser) getJournals(dispatch, currentUser);
+	if (folders.length === 0 && currentUser) getFolders(dispatch, currentUser);
   	}, []);
 
 	return (
