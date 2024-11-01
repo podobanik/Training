@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useValue } from '../context/ContextProvider';
-import { jwtDecode } from 'jwt-decode/build/cjs';
+import { jwtDecode } from 'jwt-decode';
+import refreshToken from '../actions/utils/user/refreshToken.js';
 
 import { logout } from '../actions/user';
 
@@ -14,20 +15,17 @@ const useCheckToken = () => {
   const refresh_url = 'http://localhost:8000/token/refresh/';
   useEffect(() => {
     if (currentUser) {
-      const decodedRefreshToken = jwtDecode(currentUser.refresh);
-      const decodedAccessToken = jwtDecode(currentUser.access);
-      if (decodedAccessToken.exp * 1000 < new Date().getTime()) {
-        if (decodedRefreshToken.exp * 1000 < new Date().getTime()){
-          logout(dispatch);
-        };
-        const newAccess = refreshToken({ url: refresh_url, body: currentUser.refresh}, dispatch);
-        if (newAccess) {
-          const oldRefresh = currentUser.refresh;
-          const result = {newAccess, oldRefresh}
-          dispatch({ type: 'UPDATE_USER', payload: result})
-        } else {
-          logout(dispatch);
-        };
+      const decodedToken = jwtDecode(String(currentUser.access));
+      if (decodedToken.exp * 1000 < new Date().getTime()) {
+        logout(dispatch);
+        //const newAccess = refreshToken({ url: refresh_url, body: currentUser.refresh}, dispatch);
+        //if (newAccess) {
+          //const oldRefresh = currentUser.refresh;
+          //const result = {refresh: oldRefresh, access: newAccess,}
+          //dispatch({ type: 'UPDATE_USER', payload: result})
+        //} else {
+        
+        //};
       };
     };
   }, []);

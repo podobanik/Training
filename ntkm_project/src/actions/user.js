@@ -57,10 +57,12 @@ export const logout = (dispatch) => {
 
 
 export const getUsers = async (dispatch, currentUser) => {
+  dispatch({ type: 'START_LOADING' });
   const result = await getList({ url: url + 'users/', body: currentUser }, dispatch);
   if (result) {
     dispatch({ type: 'UPDATE_USERS', payload: result });
   };
+  dispatch({ type: 'END_LOADING' });
 };
 
 export const addUserItem = async (addFields, dispatch, currentUser) => {

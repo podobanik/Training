@@ -5,7 +5,7 @@ import JournalForm from '../../../components/JournalApp/JournalForm/JournalForm.
 import JournalList from '../../../components/JournalApp/JournalList/JournalList.jsx';
 import Body from './Body/Body.jsx';
 import LeftPanel from './LeftPanel/LeftPanel.jsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getJournals } from '../../../actions/journal.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import { addJournalItem } from '../../../actions/journal.js';
@@ -16,7 +16,7 @@ import { getFolders } from '../../../actions/folder.js';
 const Journals = ({ setSelectedLink, link }) => {
 	
 	const {
-    state: { journals, currentUser},
+    state: { folders, journals, currentUser},
     dispatch,
   	} = useValue();
 

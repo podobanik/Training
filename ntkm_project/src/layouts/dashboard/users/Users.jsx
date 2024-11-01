@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Avatar, Box, Typography } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
+import { ruRU } from '@mui/material/locale';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import { getUsers } from '../../../actions/user.js';
 import moment from 'moment';
@@ -121,6 +122,7 @@ const Users = ({ setSelectedLink, link }) => {
         getRowId={(row) => row.id}
         rowsPerPageOptions={[5, 10, 20]}
         pageSize={pageSize}
+        localeText={ruRU.components.MuiPagination.defaultProps.localeText}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
           top: params.isFirstVisible ? 0 : 5,
@@ -132,7 +134,7 @@ const Users = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellEditCommit={(params) => setRowId(params.id)}
+        onCellEditCommit={(params) => setRowId(params.row.id)}
       />
     </Box>
   );

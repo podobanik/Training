@@ -33,6 +33,9 @@ const reducer = (state, action) => {
     case 'UPDATE_FOLDERS':
       return { ...state, folders: action.payload };
 
+    case 'UPDATE_STATUSES':
+      return { ...state, problem_status_all: action.payload };
+
     default:
       throw new Error('No matched action!');
   }

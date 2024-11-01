@@ -12,13 +12,14 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
   } = useValue();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
+  console.log(rowId);
+  console.log(params);
   const handleSubmit = async () => {
     setLoading(true);
 
-    const { problem_status, problem_text, id, control_date } = params.row;
+    const { problem_text, id, control_date, problem_type, object_of_work, user } = params.row;
     const result = await updateProblemItem(
-      { problem_status, problem_text, control_date },
+      { problem_text, control_date, problem_type, object_of_work, user },
       id,
       dispatch,
       currentUser
@@ -26,16 +27,13 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
     if (result) {
       setSuccess(true);
       setRowId(null);
-      // const user = users.find(user=>user._id === _id)
-      // user.role = role
-      // user.active = active
       getProblems(dispatch, currentUser);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    if (rowId === params.id && success) setSuccess(false);
+    if (rowId === params.row.id && success) setSuccess(false);
   }, [rowId]);
 
   return (
@@ -64,7 +62,7 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
             width: 40,
             height: 40,
           }}
-          disabled={params.id !== rowId || loading}
+          disabled={params.row.id !== rowId || loading}
           onClick={handleSubmit}
         >
           <Save />

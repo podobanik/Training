@@ -16,6 +16,7 @@ const initialState = {
   problems: [],
   journals: [],
   folders: [],
+  problem_status_all: [],
   userInfo: null,
 };
 

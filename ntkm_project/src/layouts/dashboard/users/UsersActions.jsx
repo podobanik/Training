@@ -35,7 +35,7 @@ const UsersActions = ({ params, rowId, setRowId }) => {
   };
 
   useEffect(() => {
-    if (rowId === params.id && success) setSuccess(false);
+    if (rowId !=null ) setSuccess(false);
   }, [rowId]);
 
   return (
@@ -64,7 +64,7 @@ const UsersActions = ({ params, rowId, setRowId }) => {
             width: 40,
             height: 40,
           }}
-          disabled={params.id !== rowId || loading}
+          disabled={ rowId === null }
           onClick={handleSubmit}
         >
           <Save />

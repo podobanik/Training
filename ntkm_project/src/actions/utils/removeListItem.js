@@ -6,7 +6,7 @@ const removeListItem = async (
 ) => {
   const headers = { 'Content-Type': 'application/json', authorization: `Bearer ${token.access}` };
   try {
-    const response = await axios.delete(url + itemId, {headers: headers});
+    const response = await axios.delete(url + itemId + '/', {headers: headers});
     if (!response.status === 200) {
       throw new Error(response.statusText);
     };

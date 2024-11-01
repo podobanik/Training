@@ -6,10 +6,13 @@ import { getProblems } from '../../../actions/problem.js';
 import moment from 'moment';
 import { grey } from '@mui/material/colors';
 import ProblemsActions from './ProblemsActions.jsx';
+import { getStatuses } from '../../../actions/problem_status.js';
+import { getUsers } from '../../../actions/user.js';
+import { ruRU } from '@mui/material/locale';
 
 const Problems = ({ setSelectedLink, link }) => {
   const {
-    state: { problems, currentUser},
+    state: { problems, problem_status_all, users, currentUser},
     dispatch,
   } = useValue();
 
@@ -19,6 +22,8 @@ const Problems = ({ setSelectedLink, link }) => {
   useEffect(() => {
     setSelectedLink(link);
     if (problems.length === 0 && currentUser) getProblems(dispatch, currentUser);
+    if (problem_status_all.length === 0 && currentUser) getStatuses(dispatch, currentUser);
+    if (users.length === 0 && currentUser) getUsers(dispatch, currentUser);
   }, []);
 
   const columns = useMemo(
@@ -42,11 +47,11 @@ const Problems = ({ setSelectedLink, link }) => {
         editable: true,
       },
       {
-        field: 'profile',
+        field: 'user',
         headerName: 'Сотрудник',
         width: 200,
         renderCell: (params) =>
-          (params.row.profile ? `${params.row.profile.last_name} ${params.row.profile.first_name} ${params.row.profile.second_name}` : ''),
+          (params.row.user?.profile ? `${params.row.user.profile.last_name} ${params.row.user.profile.first_name} ${params.row.user.profile.second_name}` : ''),
         sortable: true,
         filterable: true,
       },
@@ -54,31 +59,32 @@ const Problems = ({ setSelectedLink, link }) => {
         field: 'problem_status',
         headerName: 'Статус задачи',
         width: 170,
-        type: 'singleSelect',
-        valueOptions: [1, 2, 3, 4],
-        renderCell: (params) =>
-          (params.row.problem_status ? params.row.problem_status.problem_status_text : ''),
+        renderCell: (params) => 
+          (params.row.problem_status?.problem_status_text),
         sortable: true,
         filterable: true,
-        editable: true,
       },
       {
         field: 'problem_type',
         headerName: 'Категория задачи',
         width: 170,
+        type: 'text',
         renderCell: (params) =>
-          (params.row.problem_type ? params.row.problem_type.problem_type_text : ''),
+          (params.row.problem_type),
         sortable: true,
         filterable: true,
+        editable: true,
       },
       {
         field: 'object_of_work',
         headerName: 'Объект АСУТП',
         width: 170,
+        type: 'text',
         renderCell: (params) =>
-          (params.row.object_of_work ? params.row.object_of_work.object_of_work_text : ''),
+          (params.row.object_of_work),
         sortable: true,
         filterable: true,
+        editable: true,
       },
       {
         field: 'control_date',
@@ -107,7 +113,7 @@ const Problems = ({ setSelectedLink, link }) => {
         ),
       },
     ],
-    [rowId]
+    [rowId, users]
   );
 
   return (
@@ -128,12 +134,13 @@ const Problems = ({ setSelectedLink, link }) => {
         columns={columns}
         rows={problems}
         getRowId={(row) => row.id}
-        rowsPerPageOptions={[10, 15, 20]}
+        rowsPerPageOptions={[5, 10, 20]}
         pageSize={pageSize}
+        localeText={ruRU}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
-          top: params.isFirstVisible ? 0 : 10,
-          bottom: params.isLastVisible ? 0 : 10,
+          top: params.isFirstVisible ? 0 : 5,
+          bottom: params.isLastVisible ? 0 : 5,
         })}
         sx={{
           [`& .${gridClasses.row}`]: {
@@ -141,7 +148,7 @@ const Problems = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellEditCommit={(params) => setRowId(params.id)}
+        onCellEditCommit={(params) => setRowId(params.row.id)}
       />
     </Box>
   );

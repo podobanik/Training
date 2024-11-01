@@ -8,10 +8,12 @@ const url = 'http://localhost:8000/';
 
 
 export const getJournals = async (dispatch, currentUser) => {
+  dispatch({ type: 'START_LOADING' });
   const result = await getList({ url: url + 'journals/', body: currentUser }, dispatch);
   if (result) {
     dispatch({ type: 'UPDATE_JOURNALS', payload: result });
   };
+  dispatch({ type: 'END_LOADING' });
 };
 
 
