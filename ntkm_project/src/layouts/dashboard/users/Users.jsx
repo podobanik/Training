@@ -14,7 +14,7 @@ const Users = ({ setSelectedLink, link }) => {
     dispatch,
   } = useValue();
 
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
 
   useEffect(() => {
@@ -120,13 +120,14 @@ const Users = ({ setSelectedLink, link }) => {
         columns={columns}
         rows={users}
         getRowId={(row) => row.id}
-        rowsPerPageOptions={[5, 10, 20]}
+        rowsPerPageOptions={[10, 15, 20]}
         pageSize={pageSize}
+        pageSizeOptions={[10, 15, 20]}
         localeText={ruRU.components.MuiPagination.defaultProps.localeText}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
-          top: params.isFirstVisible ? 0 : 5,
-          bottom: params.isLastVisible ? 0 : 5,
+          top: params.isFirstVisible ? 0 : 3,
+          bottom: params.isLastVisible ? 0 : 3,
         })}
         sx={{
           [`& .${gridClasses.row}`]: {
@@ -134,7 +135,7 @@ const Users = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellEditCommit={(params) => setRowId(params.row.id)}
+        onCellClick={(params) => setRowId(params.row.id)}
       />
     </Box>
   );

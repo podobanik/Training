@@ -35,8 +35,12 @@ const UsersActions = ({ params, rowId, setRowId }) => {
   };
 
   useEffect(() => {
-    if (rowId !=null ) setSuccess(false);
-  }, [rowId]);
+		if (rowId === params.row.id && success){
+			setTimeout(() => {
+				setSuccess(false)
+			}, 1000);
+		}
+	}, [rowId, success]);
 
   return (
     <Box
@@ -64,7 +68,7 @@ const UsersActions = ({ params, rowId, setRowId }) => {
             width: 40,
             height: 40,
           }}
-          disabled={ rowId === null }
+          disabled={params.row.id !== rowId || loading}
           onClick={handleSubmit}
         >
           <Save />

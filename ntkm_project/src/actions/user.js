@@ -93,9 +93,9 @@ export const updateUserItem = async (updatedFields, itemId, dispatch, currentUse
           message: 'Информация успешно обновлена!',
         },
     });
-    return result;
+    return true;
   };
-  return null;
+  return false;
 };
 
 
