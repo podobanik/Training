@@ -8,30 +8,33 @@ import { useValue } from '../../../context/ContextProvider';
 function JournalList({ setSelectedItem }) {
 	
 	const {
-    state: { journals, folders, userInfo }
+    state: { journals, folders, userInfo, folder }
   	} = useValue();
 
 
 	const sortJournals = (a, b) => {
-		if (a.date < b.date) {
+		if (a.change_date < b.change_date) {
 			return 1;
 		} else {
 			return -1;
 		}
 	};
 	
-	const filteredJournals = useMemo(() => journals
-		.filter(el => (el.user.id === userInfo.id))
-		.sort(sortJournals), [journals, userInfo]);
+	const filteredJournals = useMemo(() => {
+		if (folder === '1'){
+			return journals?.filter(el => (el.user?.id === userInfo.id) && (el.folder?.id === folder)).sort(sortJournals);
+		} else {
+			return journals?.filter(el => (el.user?.id === userInfo.id)).sort(sortJournals);
+		}
+	}, [journals, userInfo, folders]);
 
-	if (journals.length === 0) {
+	if (journals?.length === 0) {
 		return <p>Записей пока нет, добавьте первую</p>;
 	}
 	
 
 	return	<>
-		{filteredJournals
-			.map(el => (
+		{filteredJournals?.map(el => (
 				<CardButton key={el.id} onClick={() => setSelectedItem(el)}>
 					<JournalItem 
 						title={el.title}

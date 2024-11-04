@@ -11,6 +11,7 @@ import { useValue } from '../../../context/ContextProvider.jsx';
 import { addJournalItem } from '../../../actions/journal.js';
 import { removeJournalItem } from '../../../actions/journal.js';
 import { getFolders } from '../../../actions/folder.js';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 
 
 const Journals = ({ setSelectedLink, link }) => {
@@ -25,10 +26,43 @@ const Journals = ({ setSelectedLink, link }) => {
 	useEffect(() => {
     setSelectedLink(link);
     if (journals.length === 0 && currentUser) getJournals(dispatch, currentUser);
-	if (folders.length === 0 && currentUser) getFolders(dispatch, currentUser);
+	  if (folders.length === 0 && currentUser) getFolders(dispatch, currentUser);
   	}, []);
 
-	return (
+    const onChange = (e) => {
+		dispatch({ type: 'UPDATE_FOLDER_KEY', payload: e.target.value});
+	  };
+
+    if (folders.length != 0) {
+      return (
+        <div className='app'>
+          <LeftPanel>
+            <Header/>
+            <DropdownButton
+              id="dropdown-button-dark"
+              title="Выбор папки"
+              variant="secondary"
+              onChange={onChange}
+              data-bs-theme="dark"
+            >
+              <Dropdown.Item eventKey="1" value={"1"} active>
+                Все папки
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              {folders?.filter(filter => filter.id != 1).map((item) => (
+                <Dropdown.Item eventKey={item.id} value={item.id} active>{item.name}</Dropdown.Item>
+              ))}
+            </DropdownButton>
+            <JournalAddButton clearForm={() => setSelectedItem(null)}/>
+            <JournalList setSelectedItem={setSelectedItem} />
+          </LeftPanel>
+          <Body>
+            <JournalForm onSubmit={addJournalItem} onDelete={removeJournalItem} data={selectedItem}/>
+          </Body>
+        </div>
+	    );
+    } else {
+      return (
         <div className='app'>
           <LeftPanel>
             <Header/>
@@ -39,7 +73,9 @@ const Journals = ({ setSelectedLink, link }) => {
             <JournalForm onSubmit={addJournalItem} onDelete={removeJournalItem} data={selectedItem}/>
           </Body>
         </div>
-	);
+	    );
+    };
+	
 }
 
 export default Journals;

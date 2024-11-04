@@ -12,19 +12,19 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
   } = useValue();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  console.log(rowId);
-  console.log(params);
+  const [remove, setRemove] = useState(false);
+  const [visible, setVisible] = useState(false);
   const handleSubmit = async () => {
     setLoading(true);
 
-    const { problem_text, id, control_date, problem_type, object_of_work, user } = params.row;
-    const result = await updateProblemItem(
+    const { problem_text, id, control_date, problem_type, object_of_work, user, problem_status} = params.row;
+    const update = await updateProblemItem(
       { problem_text, control_date, problem_type, object_of_work, user },
       id,
       dispatch,
       currentUser
     );
-    if (result) {
+    if (update) {
       setSuccess(true);
       setRowId(null);
       getProblems(dispatch, currentUser);
@@ -33,8 +33,12 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
   };
 
   useEffect(() => {
-    if (rowId === params.row.id && success) setSuccess(false);
-  }, [rowId]);
+		if (rowId === params.row.id && success){
+			setTimeout(() => {
+				setSuccess(false)
+			}, 1000);
+		}
+	}, [rowId, success]);
 
   return (
     <Box

@@ -4,7 +4,7 @@ const addListItem = async (
   { url, token, addFields },
   dispatch
 ) => {
-  console.log(body);
+  console.log(addFields);
   const headers = { 'Content-Type': 'application/json', authorization: `Bearer ${token.access}` };
   try {
     const response = await axios.post(url, addFields, {headers: headers});

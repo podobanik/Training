@@ -15,17 +15,26 @@ const useCheckToken = () => {
   const refresh_url = 'http://localhost:8000/token/refresh/';
   useEffect(() => {
     if (currentUser) {
-      const decodedToken = jwtDecode(String(currentUser.access));
-      if (decodedToken.exp * 1000 < new Date().getTime()) {
-        logout(dispatch);
-        //const newAccess = refreshToken({ url: refresh_url, body: currentUser.refresh}, dispatch);
-        //if (newAccess) {
-          //const oldRefresh = currentUser.refresh;
-          //const result = {refresh: oldRefresh, access: newAccess,}
-          //dispatch({ type: 'UPDATE_USER', payload: result})
-        //} else {
-        
-        //};
+      try{
+        const decodedToken = jwtDecode(String(currentUser.access));
+        if (decodedToken.exp * 1000 < new Date().getTime()) {
+          logout(dispatch);
+          //const newAccess = refreshToken({ url: refresh_url, body: currentUser.refresh}, dispatch);
+          //if (newAccess) {
+            //const oldRefresh = currentUser.refresh;
+            //const result = {refresh: oldRefresh, access: newAccess,}
+            //dispatch({ type: 'UPDATE_USER', payload: result})
+          //} else {
+          
+          //};
+        };
+      } catch (error) {
+      dispatch({
+        type: 'UPDATE_ALERT',
+        payload: { open: true, severity: 'error', message: "Требуется повторная авторизация" },
+      });
+      console.log(error);
+      logout(dispatch);
       };
     };
   }, []);

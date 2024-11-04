@@ -18,6 +18,7 @@ export const getJournals = async (dispatch, currentUser) => {
 
 
 export const addJournalItem = async (addFields, dispatch, currentUser) => {
+  console.log(addFields)
   const result = await addListItem({ url: url + 'journals/', token: currentUser, addFields: addFields }, dispatch);
   if (result) {
     dispatch({
@@ -28,6 +29,7 @@ export const addJournalItem = async (addFields, dispatch, currentUser) => {
           message: 'Информация успешно добавлена!',
         },
     });
+    dispatch({ type: 'UPDATE_JOURNALS' });
     return result;
   };
   return null;

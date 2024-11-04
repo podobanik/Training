@@ -16,6 +16,19 @@
     align-items: center;
 }
 
+.input-select {
+    background-color: #181818;
+    border: 1px solid #323232;
+    color: #d2d1d1;
+}
+
+.owner-user {
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid rgba(255, 255, 255, 0);
+    color: #d2d1d1;
+    font-size: 20px;
+}
+
 .input {
     border: none;
     background: none;

@@ -148,7 +148,7 @@ const Problems = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellEditCommit={(params) => setRowId(params.row.id)}
+        onCellClick={(params) => setRowId(params.row.id)}
       />
     </Box>
   );
