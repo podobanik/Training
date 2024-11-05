@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Avatar, Box, Typography } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
-import { ruRU } from '@mui/material/locale';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import { getUsers } from '../../../actions/user.js';
 import moment from 'moment';
@@ -10,12 +9,14 @@ import UsersActions from './UsersActions.jsx';
 
 const Users = ({ setSelectedLink, link }) => {
   const {
-    state: { users, currentUser},
+    state: { users, currentUser, userInfo},
     dispatch,
   } = useValue();
 
+
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
+
 
   useEffect(() => {
     setSelectedLink(link);
@@ -35,11 +36,7 @@ const Users = ({ setSelectedLink, link }) => {
         field: 'photoURL',
         headerName: 'Фото',
         width: 60,
-        renderCell: (params) => {
-          params.row.profile ? 
-          <Avatar src={params.row.profile.photoURL} /> 
-          : <Avatar src={'http://localhost:8000/images/profile.jpeg'} />
-        },
+        renderCell: (params) => <Avatar src={params.row.profile?.photoURL} />,
         sortable: false,
         filterable: false,
       },
@@ -64,38 +61,92 @@ const Users = ({ setSelectedLink, link }) => {
         filterable: true,
       },
       {
-        field: 'name',
-        headerName: 'ФИО',
-        width: 300,
+        field: 'profile.last_name',
+        headerName: 'Фамилия',
+        width: 100,
         type: 'text',
         renderCell: (params) =>
-          (params.row.profile ? `${params.row.profile.last_name} ${params.row.profile.first_name} ${params.row.profile.second_name}` : ''),
+          {(params.row.profile != null) ? params.row.profile.last_name : ''},
+        editable: true,
+      },
+      {
+        field: 'profile.first_name',
+        headerName: 'Имя',
+        width: 100,
+        type: 'text',
+        renderCell: (params) =>
+          {(params.row.profile != null) ? params.row.profile.first_name : ''},
+        editable: true,
+      },
+      {
+        field: 'profile.second_name',
+        headerName: 'Отчество',
+        width: 100,
+        type: 'text',
+        renderCell: (params) =>
+          {(params.row.profile != null) ? params.row.profile.second_name : ''},
+        editable: true,
+      },
+      {
+        field: 'profile.phone',
+        headerName: 'Телефон',
+        width: 100,
+        type: 'text',
+        renderCell: (params) =>
+          (params.row.profile?.phone),
+        sortable: true,
+        filterable: true,
+        editable: true,
+      },
+      {
+        field: 'profile.title',
+        headerName: 'Должность',
+        width: 200,
+        type: 'text',
+        renderCell: (params) =>
+          (params.row.profile?.title),
         sortable: true,
         filterable: true,
       },
       {
+        field: 'profile.birthday',
+        headerName: 'День рождения',
+        width: 120,
+        renderCell: (params) =>
+          moment(params.row.profile?.birthday).format('DD.MM.YYYY'),
+      },
+      {
+        field: 'date_joined',
+        headerName: 'Дата создания',
+        width: 150,
+        renderCell: (params) =>
+          moment(params.row.date_joined).format('DD.MM.YYYY HH:MM'),
+      },
+      {
         field: 'is_superuser',
-        headerName: 'Администратор',
+        headerName: 'Админ',
         width: 100,
         type: 'singleSelect',
         valueOptions: [true, false],
         renderCell: (params) =>
           (params.row.is_superuser ? 'Да' : 'Нет'),
+        sortable:true,
+        filterable: true,
         editable: true,
       },
       {
-        field: 'date_joined',
-        headerName: 'Дата создания',
-        width: 200,
+        field: 'last_login',
+        headerName: 'Появление в сети',
+        width: 150,
         renderCell: (params) =>
-          moment(params.row.date_joined).format('DD.MM.YYYY HH:MM'),
+          moment(params.row.last_login).format('DD.MM.YYYY HH:MM'),
       },
       {
         field: 'actions',
         headerName: 'Действия',
         type: 'actions',
         renderCell: (params) => (
-          <UsersActions {...{ params, rowId, setRowId }} />
+          <UsersActions {...{ params, rowId, setRowId}} />
         ),
       },
     ],
@@ -123,7 +174,6 @@ const Users = ({ setSelectedLink, link }) => {
         rowsPerPageOptions={[10, 15, 20]}
         pageSize={pageSize}
         pageSizeOptions={[10, 15, 20]}
-        localeText={ruRU.components.MuiPagination.defaultProps.localeText}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({
           top: params.isFirstVisible ? 0 : 3,
@@ -135,7 +185,7 @@ const Users = ({ setSelectedLink, link }) => {
               theme.palette.mode === 'light' ? grey[200] : grey[900],
           },
         }}
-        onCellClick={(params) => setRowId(params.row.id)}
+        onCellEditStop={(params) => setRowId(params.row.id)}
       />
     </Box>
   );

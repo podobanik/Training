@@ -37,6 +37,9 @@ const reducer = (state, action) => {
     case 'UPDATE_JOURNALS':
       return { ...state, journals: action.payload };
 
+    case 'UPDATE_STATUSES':
+      return { ...state, problem_status_all: action.payload };
+
     case 'UPDATE_FOLDERS':
       return { ...state, folders: action.payload };
 

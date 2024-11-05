@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Fab } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Check, Save } from '@mui/icons-material';
-import { green } from '@mui/material/colors';
-import { getUsers, updateUserItem } from '../../../actions/user.js';
+import { Check, Save, Delete } from '@mui/icons-material';
+import { green, red } from '@mui/material/colors';
+import { getUsers, removeUserItem, updateUserItem } from '../../../actions/user.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
 
 const UsersActions = ({ params, rowId, setRowId }) => {
@@ -10,37 +10,103 @@ const UsersActions = ({ params, rowId, setRowId }) => {
     dispatch,
     state: { currentUser },
   } = useValue();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = async () => {
+  const [loading, setLoading] = useState(false);
+  const [updated, setUpdated] = useState(false);
+  const [removed, setRemoved] = useState(false);
+  const [added, setAdded] = useState(false);
+  const [detailed, setDetailed] = useState(false);
+
+  const [openRemoveModal, setOpenRemoveModal] = useState(false);
+  const [openInfoModal, setOpenInfoModal] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
+
+
+  const handleCloseInfoModal = () => {
+    setOpenInfoModal(false);
+  };
+
+  const handleOpenInfoModal = () => {
+    setOpenInfoModal(true);
+  };
+
+  const handleCloseRemoveModal = () => {
+    setOpenRemoveModal(false);
+  };
+
+  const handleOpenRemoveModal = () => {
+    setOpenRemoveModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setOpenAddModal(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setOpenAddModal(true);
+  };
+
+  const handleRemove = async () => {
+      const {id} = params.row;
+      const remove = await removeUserItem(
+        id,
+        dispatch,
+        currentUser
+      );
+      if (remove) {
+        setRemoved(true);
+        setRowId(null);
+        setOpenRemoveModal(false);
+        getUsers(dispatch, currentUser);
+      }
+    };
+  
+
+  const handleUpdate = async () => {
     setLoading(true);
 
     const { username, is_superuser, id } = params.row;
-    const result = await updateUserItem(
+    const update = await updateUserItem(
       { is_superuser, username },
       id,
       dispatch,
       currentUser
     );
-    if (result) {
-      setSuccess(true);
+    if (update) {
+      setUpdated(true);
       setRowId(null);
-      // const user = users.find(user=>user._id === _id)
-      // user.role = role
-      // user.active = active
+      getUsers(dispatch, currentUser);
+    }
+    setLoading(false);
+  };
+
+const handleAdd = async (props) => {
+    const {user} = props
+    const add = await addUserItem(
+      user,
+      dispatch,
+      currentUser
+    );
+    if (add) {
+      setAdded(true);
       getUsers(dispatch, currentUser);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-		if (rowId === params.row.id && success){
+		if (removed){
+				setRemoved(false)
+			}
+	}, [removed]);
+
+  useEffect(() => {
+		if (rowId === params.row.id && updated){
 			setTimeout(() => {
-				setSuccess(false)
+				setUpdated(false)
 			}, 1000);
 		}
-	}, [rowId, success]);
+	}, [rowId, updated]);
 
   return (
     <Box
@@ -49,7 +115,7 @@ const UsersActions = ({ params, rowId, setRowId }) => {
         position: 'relative',
       }}
     >
-      {success ? (
+      {updated ? (
         <Fab
           color="primary"
           sx={{
@@ -69,7 +135,7 @@ const UsersActions = ({ params, rowId, setRowId }) => {
             height: 40,
           }}
           disabled={params.row.id !== rowId || loading}
-          onClick={handleSubmit}
+          onClick={handleUpdate}
         >
           <Save />
         </Fab>
@@ -86,8 +152,39 @@ const UsersActions = ({ params, rowId, setRowId }) => {
           }}
         />
       )}
+      {removed ? (
+        <Fab
+          color="#ff0000"
+          sx={{
+            width: 40,
+            height: 40,
+            bgcolor: red[500],
+            '&:hover': { bgcolor: red[700] },
+          }}
+        >
+          <Check />
+        </Fab>
+      ) : (
+        <Fab
+          color="#ff0000"
+          sx={{
+            width: 40,
+            height: 40,
+          }}
+          onClick={handleOpenRemoveModal}
+        >
+          <Delete />
+        </Fab>
+      )}
+      {openRemoveModal && ( 
+        <RemoveModal
+          openRemoveModal={openRemoveModal}
+          handleCloseRemoveModal={handleCloseRemoveModal}
+          handleRemove={handleRemove}
+        />
+      )}
     </Box>
   );
-};
 
+};
 export default UsersActions;

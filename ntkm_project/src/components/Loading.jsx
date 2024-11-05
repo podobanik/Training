@@ -1,6 +1,6 @@
 import { Backdrop, CircularProgress } from '@mui/material';
 import React from 'react';
-import { useValue } from '../../context/ContextProvider.jsx';
+import { useValue } from '../context/ContextProvider.jsx';
 
 const Loading = () => {
   const {

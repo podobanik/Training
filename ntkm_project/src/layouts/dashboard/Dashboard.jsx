@@ -13,7 +13,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SideList from './SideList.jsx';
 import Login from '../../components/UserApp/user/Login.jsx';
-import Notification from '../../components/UserApp/Notification.jsx'
+import Notification from '../../components/Notification.jsx';
 import Protected from '../../components/UserApp/protected/Protected.jsx';
 
 const drawerWidth = 240;
