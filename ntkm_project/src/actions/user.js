@@ -10,11 +10,11 @@ import removeListItem from './utils/removeListItem.js';
 
 const url = 'http://localhost:8000/';
 
-export const register = async (user, dispatch) => {
+export const register = async (addFields, dispatch, currentUser) => {
   dispatch({ type: 'START_LOADING' });
 
   const result = await registerUser(
-    { url: url + 'register/', body: user },
+    { url: url + 'register/', body: addFields, currentUser: currentUser },
     dispatch
   );
   if (result) {
@@ -24,7 +24,7 @@ export const register = async (user, dispatch) => {
       payload: {
         open: true,
         severity: 'success',
-        message: 'Ваш аккаунт был успешно создан!',
+        message: 'Аккаунт был успешно создан!',
       },
     });
   }
@@ -58,6 +58,10 @@ export const logout = (dispatch) => {
 
 export const getUsers = async (dispatch, currentUser) => {
   dispatch({ type: 'START_LOADING' });
+  const sectors = await getList({ url: url + 'sectors/', body: currentUser }, dispatch);
+  if (sectors) {
+    dispatch({ type: 'UPDATE_SECTORS', payload: sectors });
+  };
   const result = await getList({ url: url + 'users/', body: currentUser }, dispatch);
   if (result) {
     dispatch({ type: 'UPDATE_USERS', payload: result });

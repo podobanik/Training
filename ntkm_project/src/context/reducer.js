@@ -31,6 +31,9 @@ const reducer = (state, action) => {
     case 'UPDATE_USERS':
       return { ...state, users: action.payload };
 
+    case 'UPDATE_SECTORS':
+      return { ...state, sectors: action.payload };
+
     case 'UPDATE_PROBLEMS':
       return { ...state, problems: action.payload };
 

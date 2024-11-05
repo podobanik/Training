@@ -4,6 +4,7 @@ import { Check, Save, Delete } from '@mui/icons-material';
 import { green, red } from '@mui/material/colors';
 import { getUsers, removeUserItem, updateUserItem } from '../../../actions/user.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
+import RemoveModal from '../../../components/RemoveModal.jsx';
 
 const UsersActions = ({ params, rowId, setRowId }) => {
   const {
@@ -14,12 +15,11 @@ const UsersActions = ({ params, rowId, setRowId }) => {
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [removed, setRemoved] = useState(false);
-  const [added, setAdded] = useState(false);
   const [detailed, setDetailed] = useState(false);
 
   const [openRemoveModal, setOpenRemoveModal] = useState(false);
-  const [openInfoModal, setOpenInfoModal] = useState(false);
-  const [openAddModal, setOpenAddModal] = useState(false);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+ 
 
 
   const handleCloseInfoModal = () => {
@@ -36,14 +36,6 @@ const UsersActions = ({ params, rowId, setRowId }) => {
 
   const handleOpenRemoveModal = () => {
     setOpenRemoveModal(true);
-  };
-
-  const handleCloseAddModal = () => {
-    setOpenAddModal(false);
-  };
-
-  const handleOpenAddModal = () => {
-    setOpenAddModal(true);
   };
 
   const handleRemove = async () => {
@@ -80,19 +72,6 @@ const UsersActions = ({ params, rowId, setRowId }) => {
     setLoading(false);
   };
 
-const handleAdd = async (props) => {
-    const {user} = props
-    const add = await addUserItem(
-      user,
-      dispatch,
-      currentUser
-    );
-    if (add) {
-      setAdded(true);
-      getUsers(dispatch, currentUser);
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
 		if (removed){

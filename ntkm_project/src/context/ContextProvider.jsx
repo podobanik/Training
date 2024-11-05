@@ -15,6 +15,7 @@ export const initialState = {
   problems: [],
   journals: [],
   folders: [],
+  sectors:[],
   problem_status_all: [],
   userInfo: null,
   isValidFolder: {

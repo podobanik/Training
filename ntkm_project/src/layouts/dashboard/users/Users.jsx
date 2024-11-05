@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Button, Typography } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import { getUsers } from '../../../actions/user.js';
 import moment from 'moment';
 import { grey } from '@mui/material/colors';
 import UsersActions from './UsersActions.jsx';
+import AddObjectModal from '../../../components/AddObjectModal.jsx';
 
 const Users = ({ setSelectedLink, link }) => {
   const {
@@ -16,7 +17,16 @@ const Users = ({ setSelectedLink, link }) => {
 
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
+  const [openAddModal, setOpenAddModal] = useState(false);
 
+
+  const handleCloseAddModal = () => {
+    setOpenAddModal(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setOpenAddModal(true);
+  };
 
   useEffect(() => {
     setSelectedLink(link);
@@ -59,54 +69,62 @@ const Users = ({ setSelectedLink, link }) => {
           (params.row.email),
         sortable: true,
         filterable: true,
+        editable:true,
       },
       {
-        field: 'profile.last_name',
+        field: 'last_name',
         headerName: 'Фамилия',
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile != null) ? params.row.profile.last_name : ''},
+          {(params.row.profile !== null) ? params.row.profile.last_name : ''},
+        sortable: true,
+        filterable: true,
         editable: true,
       },
       {
-        field: 'profile.first_name',
+        field: 'first_name',
         headerName: 'Имя',
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile != null) ? params.row.profile.first_name : ''},
+          {(params.row.profile !== null) ? params.row.profile.first_name : ''},
+        sortable:true,
+        filterable:true,
         editable: true,
       },
       {
-        field: 'profile.second_name',
+        field: 'second_name',
         headerName: 'Отчество',
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile != null) ? params.row.profile.second_name : ''},
+          {(params.row.profile !== null) ? params.row.profile.second_name : ''},
+        sortable: true,
+        filterable: true,
         editable: true,
       },
       {
-        field: 'profile.phone',
+        field: 'phone',
         headerName: 'Телефон',
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          (params.row.profile?.phone),
+          {(params.row.profile !== null) ? params.row.profile.phone : ''},
         sortable: true,
         filterable: true,
         editable: true,
       },
       {
-        field: 'profile.title',
+        field: 'title',
         headerName: 'Должность',
         width: 200,
         type: 'text',
         renderCell: (params) =>
-          (params.row.profile?.title),
+          {(params.row.profile !== null) ? params.row.profile.title : ''},
         sortable: true,
         filterable: true,
+        editable: true,
       },
       {
         field: 'profile.birthday',
@@ -187,6 +205,15 @@ const Users = ({ setSelectedLink, link }) => {
         }}
         onCellEditStop={(params) => setRowId(params.row.id)}
       />
+      <Button onClick={handleOpenAddModal}>Добавить учётную запись</Button>
+      {openAddModal&& (
+        <AddObjectModal
+          openAddModal={openAddModal}
+          setOpenAddModal={setOpenAddModal}
+          handleCloseAddModal={handleCloseAddModal}
+          object="user"
+        />
+      )}
     </Box>
   );
 };
