@@ -12,8 +12,45 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
   } = useValue();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [remove, setRemove] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [removed, setRemoved] = useState(false);
+  const [detailed, setDetailed] = useState(false);
+
+  const [openRemoveModal, setOpenRemoveModal] = useState(false);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+ 
+
+
+  const handleCloseDetailModal = () => {
+    setOpenDetailModal(false);
+  };
+
+  const handleOpenDetailModal = () => {
+    setOpenDetailModal(true);
+  };
+
+  const handleCloseRemoveModal = () => {
+    setOpenRemoveModal(false);
+  };
+
+  const handleOpenRemoveModal = () => {
+    setOpenRemoveModal(true);
+  };
+
+  const handleRemove = async () => {
+      const {id} = params.row;
+      const remove = await removeProblemItem(
+        id,
+        dispatch,
+        currentUser
+      );
+      if (remove) {
+        setRemoved(true);
+        setRowId(null);
+        setOpenRemoveModal(false);
+        getUsers(dispatch, currentUser);
+      }
+    };
+
   const handleSubmit = async () => {
     setLoading(true);
 
@@ -31,6 +68,12 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+		if (removed){
+				setRemoved(false)
+			}
+	}, [removed]);
 
   useEffect(() => {
 		if (rowId === params.row.id && success){
@@ -82,6 +125,37 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
             left: -6,
             zIndex: 1,
           }}
+        />
+      )}
+      {removed ? (
+        <Fab
+          color="#ff0000"
+          sx={{
+            width: 40,
+            height: 40,
+            bgcolor: red[500],
+            '&:hover': { bgcolor: red[700] },
+          }}
+        >
+          <Check />
+        </Fab>
+      ) : (
+        <Fab
+          color="#ff0000"
+          sx={{
+            width: 40,
+            height: 40,
+          }}
+          onClick={handleOpenRemoveModal}
+        >
+          <Delete />
+        </Fab>
+      )}
+      {openRemoveModal && ( 
+        <RemoveModal
+          openRemoveModal={openRemoveModal}
+          handleCloseRemoveModal={handleCloseRemoveModal}
+          handleRemove={handleRemove}
         />
       )}
     </Box>

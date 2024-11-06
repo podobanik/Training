@@ -12,17 +12,26 @@ import { ruRU } from '@mui/material/locale';
 
 const Problems = ({ setSelectedLink, link }) => {
   const {
-    state: { problems, problem_status_all, users, currentUser},
+    state: { problems, problem_status_all, problem_type_all, objects_of_work, users, currentUser},
     dispatch,
   } = useValue();
 
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
+  const [openAddModal, setOpenAddModal] = useState(false);
+
+
+  const handleCloseAddModal = () => {
+    setOpenAddModal(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setOpenAddModal(true);
+  };
 
   useEffect(() => {
     setSelectedLink(link);
     if (problems.length === 0 && currentUser) getProblems(dispatch, currentUser);
-    if (problem_status_all.length === 0 && currentUser) getStatuses(dispatch, currentUser);
     if (users.length === 0 && currentUser) getUsers(dispatch, currentUser);
   }, []);
 
@@ -50,27 +59,34 @@ const Problems = ({ setSelectedLink, link }) => {
         field: 'user',
         headerName: 'Сотрудник',
         width: 200,
+        type: 'singleSelect',
+        valueOptions: users?.map((item, index) => <option key={index} onClickvalue={users?.map((filter) => filter.id === item.id)}>{`${item.profile.last_name} ${item.profile.first_name} ${item.profile.second_name}`}</option>),
         renderCell: (params) =>
-          (params.row.user?.profile ? `${params.row.user.profile.last_name} ${params.row.user.profile.first_name} ${params.row.user.profile.second_name}` : ''),
-        sortable: true,
+          (params.row.problem_type?.problem_type_text),
         filterable: true,
+        sortable: true,
+        editable: true,
       },
       {
         field: 'problem_status',
         headerName: 'Статус задачи',
         width: 170,
-        renderCell: (params) => 
+        type: 'singleSelect',
+        valueOptions: problem_status_all?.map((item, index) => <option key={index} onClickvalue={problem_status_all?.map((filter) => filter.id === item.id)}>{item.problem_status_text}</option>),
+        renderCell: (params) =>
           (params.row.problem_status?.problem_status_text),
         sortable: true,
         filterable: true,
+        editable: true,
       },
       {
         field: 'problem_type',
         headerName: 'Категория задачи',
         width: 170,
-        type: 'text',
+        type: 'singleSelect',
+        valueOptions: problem_type_all?.map((item, index) => <option key={index} onClickvalue={problem_type_all?.map((filter) => filter.id === item.id)}>{item.problem_type_text}</option>),
         renderCell: (params) =>
-          (params.row.problem_type),
+          (params.row.problem_type?.problem_type_text),
         sortable: true,
         filterable: true,
         editable: true,
@@ -79,9 +95,10 @@ const Problems = ({ setSelectedLink, link }) => {
         field: 'object_of_work',
         headerName: 'Объект АСУТП',
         width: 170,
-        type: 'text',
+        type: 'singleSelect',
+        valueOptions: objects_of_work?.map((item, index) => <option key={index} onClickvalue={objects_of_work?.map((filter) => filter.id === item.id)}>{item.object_of_work_text}</option>),
         renderCell: (params) =>
-          (params.row.object_of_work),
+          (params.row.object_of_work?.object_of_work_text),
         sortable: true,
         filterable: true,
         editable: true,
@@ -94,6 +111,7 @@ const Problems = ({ setSelectedLink, link }) => {
           moment(params.row.control_date).format('DD.MM.YYYY'),
         sortable: true,
         filterable:true,
+        editable: true,
       },
       {
         field: 'change_date',
@@ -103,6 +121,7 @@ const Problems = ({ setSelectedLink, link }) => {
           moment(params.row.change_date).format('DD.MM.YYYY HH:MM'),
         sortable: true,
         filterable:true,
+        editable: false,
       },
       {
         field: 'actions',
@@ -113,7 +132,7 @@ const Problems = ({ setSelectedLink, link }) => {
         ),
       },
     ],
-    [rowId, users]
+    [rowId, users, problem_status_all, problem_type_all, objects_of_work]
   );
 
   return (
@@ -150,6 +169,14 @@ const Problems = ({ setSelectedLink, link }) => {
         }}
         onCellEditStop={(params) => setRowId(params.row.id)}
       />
+      <Button onClick={handleOpenAddModal}>Добавить запись</Button>
+      {openAddModal && (
+        <AddObjectProblemModal
+          openAddModal={openAddModal}
+          setOpenAddModal={setOpenAddModal}
+          handleCloseAddModal={handleCloseAddModal}
+        />
+      )}
     </Box>
   );
 };

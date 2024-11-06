@@ -9,6 +9,18 @@ const url = 'http://localhost:8000/';
 
 export const getProblems = async (dispatch, currentUser) => {
   dispatch({ type: 'START_LOADING' });
+  const problem_status_all = await getList({ url: url + 'problem_status_all/', body: currentUser }, dispatch);
+  if (problem_status_all) {
+    dispatch({ type: 'UPDATE_STATUSES', payload: problem_status_all });
+  };
+  const problem_type_all = await getList({ url: url + 'problem_type_all/', body: currentUser }, dispatch);
+  if (problem_type_all) {
+    dispatch({ type: 'UPDATE_TYPES', payload: problem_type_all });
+  };
+  const objects_of_work = await getList({ url: url + 'objects_of_work/', body: currentUser }, dispatch);
+  if (objects_of_work) {
+    dispatch({ type: 'UPDATE_OBJECTS', payload: objects_of_work });
+  };
   const result = await getList({ url: url + 'problems/', body: currentUser }, dispatch);
   if (result) {
     dispatch({ type: 'UPDATE_PROBLEMS', payload: result });

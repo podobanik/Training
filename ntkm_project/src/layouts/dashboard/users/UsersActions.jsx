@@ -22,12 +22,12 @@ const UsersActions = ({ params, rowId, setRowId }) => {
  
 
 
-  const handleCloseInfoModal = () => {
-    setOpenInfoModal(false);
+  const handleCloseDetailModal = () => {
+    setOpenDetailModal(false);
   };
 
-  const handleOpenInfoModal = () => {
-    setOpenInfoModal(true);
+  const handleOpenDetailModal = () => {
+    setOpenDetailModal(true);
   };
 
   const handleCloseRemoveModal = () => {

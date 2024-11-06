@@ -69,6 +69,7 @@ export const getUsers = async (dispatch, currentUser) => {
   dispatch({ type: 'END_LOADING' });
 };
 
+
 export const addUserItem = async (addFields, dispatch, currentUser) => {
   const result = await addListItem({ url: url + 'users/', token: currentUser, addFields: addFields }, dispatch);
   if (result) {

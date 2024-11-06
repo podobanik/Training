@@ -17,6 +17,8 @@ export const initialState = {
   folders: [],
   sectors:[],
   problem_status_all: [],
+  problem_type_all: [],
+  objects_of_work: [],
   userInfo: null,
   isValidFolder: {
 		name: true,

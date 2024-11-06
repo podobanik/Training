@@ -6,7 +6,7 @@ import { getUsers } from '../../../actions/user.js';
 import moment from 'moment';
 import { grey } from '@mui/material/colors';
 import UsersActions from './UsersActions.jsx';
-import AddObjectModal from '../../../components/AddObjectModal.jsx';
+import AddObjectUserModal from '../../../components/UserApp/user/AddObjectUserModal.jsx';
 
 const Users = ({ setSelectedLink, link }) => {
   const {
@@ -77,7 +77,7 @@ const Users = ({ setSelectedLink, link }) => {
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile !== null) ? params.row.profile.last_name : ''},
+          (params.row.profile !== null) ? params.row.profile.last_name : '',
         sortable: true,
         filterable: true,
         editable: true,
@@ -88,7 +88,7 @@ const Users = ({ setSelectedLink, link }) => {
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile !== null) ? params.row.profile.first_name : ''},
+          (params.row.profile !== null) ? params.row.profile.first_name : '',
         sortable:true,
         filterable:true,
         editable: true,
@@ -99,7 +99,7 @@ const Users = ({ setSelectedLink, link }) => {
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile !== null) ? params.row.profile.second_name : ''},
+          (params.row.profile !== null) ? params.row.profile.second_name : '',
         sortable: true,
         filterable: true,
         editable: true,
@@ -110,7 +110,7 @@ const Users = ({ setSelectedLink, link }) => {
         width: 100,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile !== null) ? params.row.profile.phone : ''},
+          (params.row.profile !== null) ? params.row.profile.phone : '',
         sortable: true,
         filterable: true,
         editable: true,
@@ -121,7 +121,7 @@ const Users = ({ setSelectedLink, link }) => {
         width: 200,
         type: 'text',
         renderCell: (params) =>
-          {(params.row.profile !== null) ? params.row.profile.title : ''},
+          (params.row.profile !== null) ? params.row.profile.title : '',
         sortable: true,
         filterable: true,
         editable: true,
@@ -130,8 +130,12 @@ const Users = ({ setSelectedLink, link }) => {
         field: 'profile.birthday',
         headerName: 'День рождения',
         width: 120,
+        type:'date',
         renderCell: (params) =>
           moment(params.row.profile?.birthday).format('DD.MM.YYYY'),
+        sortable: true,
+        filterable:true,
+        editable: true,
       },
       {
         field: 'date_joined',
@@ -206,12 +210,11 @@ const Users = ({ setSelectedLink, link }) => {
         onCellEditStop={(params) => setRowId(params.row.id)}
       />
       <Button onClick={handleOpenAddModal}>Добавить учётную запись</Button>
-      {openAddModal&& (
-        <AddObjectModal
+      {openAddModal && (
+        <AddObjectUserModal
           openAddModal={openAddModal}
           setOpenAddModal={setOpenAddModal}
           handleCloseAddModal={handleCloseAddModal}
-          object="user"
         />
       )}
     </Box>
