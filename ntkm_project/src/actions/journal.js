@@ -29,7 +29,6 @@ export const addJournalItem = async (addFields, dispatch, currentUser) => {
           message: 'Информация успешно добавлена!',
         },
     });
-    dispatch({ type: 'UPDATE_JOURNALS' });
     return result;
   };
   return null;

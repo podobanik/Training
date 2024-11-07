@@ -3,6 +3,7 @@ import { forwardRef, useRef, useState } from 'react';
 import { useValue } from '../../../context/ContextProvider';
 import PasswordField from './PasswordField';
 import { register } from '../../../actions/user';
+import { getUsers } from '../../../actions/user';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -53,22 +54,6 @@ const AddObjectUserModal = ({openAddModal, setOpenAddModal, handleCloseAddModal}
         setSelectedPhoto(e.target.files[0])
     }
 
-    const handleUpdate = async () => {
-        if (!selectedPhoto) {
-            return dispatch({
-            type: 'UPDATE_ALERT',
-            payload: {
-            open: true,
-            severity: 'error',
-            message: 'Выберите изображение!',
-            },
-            });
-            return;
-        };
-
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-    }
     
     const submitDataAdd = async (e) => {
         e.preventDefault();
@@ -233,7 +218,7 @@ const AddObjectUserModal = ({openAddModal, setOpenAddModal, handleCloseAddModal}
                     autoFocus
                     margin="normal"
                     variant="standard"
-                    id="birthday"
+                    id="sector"
                     label="Сектор сотрудника"
                     select
                     fullWidth
@@ -259,14 +244,9 @@ const AddObjectUserModal = ({openAddModal, setOpenAddModal, handleCloseAddModal}
                     inputRef={phoneRef}
                     required
                 />
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    variant="standard"
-                    id="photoURL"
-                    type="file"
-                    fullWidth
-                    helperText="Фото сотрудника"    
+                <input
+                    name="photoURL"
+                    type="file"  
                     onChange={handleChangePhoto}     
                     accept="image/*,"        
                 />

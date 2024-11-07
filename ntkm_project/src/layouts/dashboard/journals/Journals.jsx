@@ -38,21 +38,6 @@ const Journals = ({ setSelectedLink, link }) => {
         <div className='app'>
           <LeftPanel>
             <Header/>
-            <DropdownButton
-              id="dropdown-button-dark"
-              title="Выбор папки"
-              variant="secondary"
-              onChange={onChange}
-              data-bs-theme="dark"
-            >
-              <Dropdown.Item eventKey="1" value={"1"} active>
-                Все папки
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              {folders?.filter(filter => filter.id != 1).map((item) => (
-                <Dropdown.Item eventKey={item.id} value={item.id} active>{item.name}</Dropdown.Item>
-              ))}
-            </DropdownButton>
             <JournalAddButton clearForm={() => setSelectedItem(null)}/>
             <JournalList setSelectedItem={setSelectedItem} />
           </LeftPanel>

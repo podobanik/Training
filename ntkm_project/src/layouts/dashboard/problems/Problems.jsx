@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Typography, Button } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useValue } from '../../../context/ContextProvider.jsx';
 import { getProblems } from '../../../actions/problem.js';
 import moment from 'moment';
 import { grey } from '@mui/material/colors';
 import ProblemsActions from './ProblemsActions.jsx';
-import { getStatuses } from '../../../actions/problem_status.js';
+import AddObjectProblemModal from '../../../components/TaskApp/AddObjectProblemModal.jsx';
 import { getUsers } from '../../../actions/user.js';
 import { ruRU } from '@mui/material/locale';
+import { getValueFromValueOptions } from '@mui/x-data-grid/components/panel/filterPanel/filterPanelUtils.js';
+import { getActiveElement } from '@mui/x-data-grid/internals';
 
 const Problems = ({ setSelectedLink, link }) => {
   const {
@@ -58,11 +60,11 @@ const Problems = ({ setSelectedLink, link }) => {
       {
         field: 'user',
         headerName: 'Сотрудник',
-        width: 200,
+        width: 300,
         type: 'singleSelect',
-        valueOptions: users?.map((item, index) => <option key={index} onClickvalue={users?.map((filter) => filter.id === item.id)}>{`${item.profile.last_name} ${item.profile.first_name} ${item.profile.second_name}`}</option>),
-        renderCell: (params) =>
-          (params.row.problem_type?.problem_type_text),
+        valueOptions: users?.map(item => `${item.profile.last_name} ${item.profile.first_name} ${item.profile.second_name}`),
+        renderCell: (params) => 
+          (`${params.row.user?.profile?.last_name} ${params.row.user?.profile?.first_name} ${params.row.user?.profile?.second_name}`),
         filterable: true,
         sortable: true,
         editable: true,
@@ -72,7 +74,7 @@ const Problems = ({ setSelectedLink, link }) => {
         headerName: 'Статус задачи',
         width: 170,
         type: 'singleSelect',
-        valueOptions: problem_status_all?.map((item, index) => <option key={index} onClickvalue={problem_status_all?.map((filter) => filter.id === item.id)}>{item.problem_status_text}</option>),
+        valueOptions: problem_status_all?.map(item => item.problem_status_text),
         renderCell: (params) =>
           (params.row.problem_status?.problem_status_text),
         sortable: true,
@@ -84,7 +86,7 @@ const Problems = ({ setSelectedLink, link }) => {
         headerName: 'Категория задачи',
         width: 170,
         type: 'singleSelect',
-        valueOptions: problem_type_all?.map((item, index) => <option key={index} onClickvalue={problem_type_all?.map((filter) => filter.id === item.id)}>{item.problem_type_text}</option>),
+        valueOptions: problem_type_all?.map(item => item.problem_type_text),
         renderCell: (params) =>
           (params.row.problem_type?.problem_type_text),
         sortable: true,
@@ -96,7 +98,7 @@ const Problems = ({ setSelectedLink, link }) => {
         headerName: 'Объект АСУТП',
         width: 170,
         type: 'singleSelect',
-        valueOptions: objects_of_work?.map((item, index) => <option key={index} onClickvalue={objects_of_work?.map((filter) => filter.id === item.id)}>{item.object_of_work_text}</option>),
+        valueOptions: objects_of_work?.map(item => item.object_of_work_text),
         renderCell: (params) =>
           (params.row.object_of_work?.object_of_work_text),
         sortable: true,
@@ -112,16 +114,6 @@ const Problems = ({ setSelectedLink, link }) => {
         sortable: true,
         filterable:true,
         editable: true,
-      },
-      {
-        field: 'change_date',
-        headerName: 'Дата изменения',
-        width: 200,
-        renderCell: (params) =>
-          moment(params.row.change_date).format('DD.MM.YYYY HH:MM'),
-        sortable: true,
-        filterable:true,
-        editable: false,
       },
       {
         field: 'actions',
@@ -155,6 +147,7 @@ const Problems = ({ setSelectedLink, link }) => {
         getRowId={(row) => row.id}
         rowsPerPageOptions={[5, 10, 20]}
         pageSize={pageSize}
+        pageSizeOptions={[10, 15, 20]}
         localeText={ruRU}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         getRowSpacing={(params) => ({

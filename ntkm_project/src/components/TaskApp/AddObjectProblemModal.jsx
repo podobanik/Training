@@ -1,16 +1,15 @@
 import { Button, Dialog, DialogActions, DialogContent, MenuItem, Slide, DialogTitle, useMediaQuery, useTheme, TextField, Input, Switch, FormGroup, FormControlLabel } from '@mui/material';
 import { forwardRef, useRef, useState } from 'react';
-import { useValue } from '../../../context/ContextProvider';
-
-
-import { addProblemItem } from '../../actions/problem';
+import { useValue } from '../../context/ContextProvider';
+import { addProblemItem, getProblems } from '../../actions/problem';
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddModal}) => {
+export const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddModal}) => {
     const problemTextRef = useRef();
+    const problemTextExpandRef = useRef();
     const controlDateRef = useRef();
     const userRef = useRef();
     const problemTypeRef = useRef();
@@ -19,7 +18,7 @@ const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddMod
     const fileRef = useRef();
     const {
     dispatch,
-    state: { currentUser, problem_status_all, objects_of_work, problem_type_all },
+    state: { currentUser, problem_status_all, objects_of_work, problem_type_all, users },
   } = useValue()
     
     const theme = useTheme();
@@ -37,6 +36,7 @@ const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddMod
         formData.append('file', selectedFiles);
         const file = formData;
         const problem_text = problemTextRef.current.value;
+        const problem_text_expand = problemTextExpandRef.current.value;
         const problem_status = problemStatusRef.current.value;
         const problem_type = problemTypeRef.current.value;
         const user = userRef.current.value;
@@ -45,6 +45,7 @@ const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddMod
         
         const addFields = {
                 problem_text: problem_text,
+                problem_text_expand: problem_text_expand,
                 user: user,
                 problem_status: problem_status,
                 problem_type: problem_type,
@@ -60,11 +61,9 @@ const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddMod
             );
             if (add) {
                 setOpenAddModal(false)
-                getUsers(dispatch, currentUser);
+                getProblems(dispatch, currentUser);
             }
         };
-    };
-
 
     return (
     <Dialog
@@ -84,101 +83,40 @@ const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddMod
                     autoFocus
                     margin="normal"
                     variant="standard"
-                    id="email"
-                    label="Адрес электронной почты"
-                    type="email"
-                    fullWidth
-                    inputRef={emailRef}
-                    required
-                />
-                <PasswordField {...{ passwordRef }} />
-                <PasswordField
-                    passwordRef={confirmPasswordRef}
-                    id="confirmPassword"
-                    label="Подтвердите пароль"
-                />
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    variant="standard"
-                    id="username"
-                    label="Логин"
+                    id="problem_text"
+                    label="Краткое описание задачи"
                     type="text"
                     fullWidth
-                    inputRef={usernameRef}
+                    inputRef={problemTextRef}
                     required
                 />
                 <TextField
                     autoFocus
                     margin="normal"
                     variant="standard"
-                    id="last_name"
-                    label="Фамилия"
+                    id="problem_text_expand"
+                    label="Подробное описание задачи"
                     type="text"
                     fullWidth
-                    inputRef={lastNameRef}
+                    inputRef={problemTextExpandRef}
                     required
                 />
                 <TextField
                     autoFocus
                     margin="normal"
                     variant="standard"
-                    id="last_name"
-                    label="Имя"
-                    type="text"
-                    fullWidth
-                    inputRef={firstNameRef}
-                    required
-                />
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    variant="standard"
-                    id="second_name"
-                    label="Отчество"
-                    type="text"
-                    fullWidth
-                    inputRef={secondNameRef}
-                    required
-                />
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    variant="standard"
-                    id="title"
-                    label="Должность"
-                    type="text"
-                    fullWidth
-                    inputRef={titleRef}
-                    required
-                />
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    variant="standard"
-                    id="birthday"
-                    helperText="День рождения"
-                    type="date"
-                    fullWidth
-                    inputRef={birthdayRef}
-                    required
-                />
-                <TextField
-                    autoFocus
-                    margin="normal"
-                    variant="standard"
-                    id="birthday"
-                    label="Сектор сотрудника"
+                    id="user"
+                    label="Ответственный сотрудник"
                     select
                     fullWidth
-                    inputRef={sectorRef}
+                    inputRef={userRef}
                     required
-                    helperText="Выберите сектор из списка"
+                    helperText="Выберите сотрудника из списка"
                     defaultValue=""
                 >
-                    {sectors.map((option) => (
+                    {users?.map((option) => (
                         <MenuItem key={option.id} value={option.id}>
-                            {option.sector_text}
+                            {`${option.profile.last_name} ${option.profile.first_name} ${option.profile.second_name}`}
                         </MenuItem>
                     ))}
                 </TextField>
@@ -186,63 +124,76 @@ const AddObjectProblemModal = ({openAddModal, setOpenAddModal, handleCloseAddMod
                     autoFocus
                     margin="normal"
                     variant="standard"
-                    id="phone"
-                    label="Номер телефона"
-                    type="text"
+                    id="problem_status"
+                    label="Статус задачи"
+                    select
                     fullWidth
-                    inputRef={phoneRef}
+                    inputRef={problemStatusRef}
                     required
-                />
+                    helperText="Выберите статус задачи"
+                    defaultValue=""
+                >
+                    {problem_status_all?.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                            {option.problem_status_text}
+                        </MenuItem>
+                    ))}
+                </TextField>
                 <TextField
                     autoFocus
                     margin="normal"
                     variant="standard"
-                    id="photoURL"
-                    type="file"
+                    id="problem_type"
+                    label="Категория задачи"
+                    select
                     fullWidth
-                    helperText="Фото сотрудника"    
-                    onChange={handleChangePhoto}     
-                    accept="image/*,"        
+                    inputRef={problemTypeRef}
+                    required
+                    helperText="Выберите категорию из списка"
+                    defaultValue=""
+                >
+                    {problem_type_all?.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                            {option.problem_type_text}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    autoFocus
+                    margin="normal"
+                    variant="standard"
+                    id="object_of_work"
+                    label="Объект производства работ"
+                    select
+                    fullWidth
+                    inputRef={objectOfWorkRef}
+                    required
+                    helperText="Выберите объект из списка"
+                    defaultValue=""
+                >
+                    {objects_of_work?.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                            {option.object_of_work_text}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    autoFocus
+                    margin="normal"
+                    variant="standard"
+                    id="control_date"
+                    helperText="Контрольный срок"
+                    type="date"
+                    fullWidth
+                    inputRef={controlDateRef}
+                    required
                 />
-                <FormGroup>
-                    <FormControlLabel
-                    control={
-                        <Switch 
-                        checked={checkedActive}
-                        onChange={handleChangeActive}
-                        name="is_active"
-                        inputRef={isActiveRef}
-                        />
-                    }
-                    label="Активный пользователь"
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormControlLabel
-                    control={
-                        <Switch 
-                        checked={checkedStaff}
-                        onChange={handleChangeStaff}
-                        name="is_staff"
-                        inputRef={isStaffRef}
-                        />
-                    }
-                    label="Доступ к админке"
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormControlLabel
-                    control={
-                        <Switch 
-                        checked={checkedSuperuser}
-                        onChange={handleChangeSuperuser}
-                        name="is_superuser"
-                        inputRef={isSuperuserRef}
-                        />
-                    }
-                    label="Суперпользователь"
-                    />
-                </FormGroup>
+                <input
+                    name="file"
+                    type="file"  
+                    onChange={handleSelectFiles}     
+                    multiple        
+                />
                 </DialogContent>
                 <DialogActions sx={{ px: '19px' }}>
                 <Button type="submit" variant="contained">

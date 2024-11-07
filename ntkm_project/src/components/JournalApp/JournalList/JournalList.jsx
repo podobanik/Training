@@ -28,7 +28,7 @@ function JournalList({ setSelectedItem }) {
 		}
 	}, [journals, userInfo, folders]);
 
-	if (journals?.length === 0) {
+	if (journals?.length === 0 || journals?.filter(el => (el.user?.id === userInfo.id)).length === 0) {
 		return <p>Записей пока нет, добавьте первую</p>;
 	}
 	

@@ -157,13 +157,6 @@ const Users = ({ setSelectedLink, link }) => {
         editable: true,
       },
       {
-        field: 'last_login',
-        headerName: 'Появление в сети',
-        width: 150,
-        renderCell: (params) =>
-          moment(params.row.last_login).format('DD.MM.YYYY HH:MM'),
-      },
-      {
         field: 'actions',
         headerName: 'Действия',
         type: 'actions',

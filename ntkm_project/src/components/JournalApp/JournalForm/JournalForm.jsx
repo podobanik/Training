@@ -5,6 +5,7 @@ import cn from 'classnames';
 import Input from '../Input/Input';
 import { useValue } from '../../../context/ContextProvider';
 import {Form, Image, Button} from 'react-bootstrap';
+import { getJournals } from '../../../actions/journal';
 
 
 function JournalForm({ onSubmit, data, onDelete }) {
@@ -68,6 +69,7 @@ function JournalForm({ onSubmit, data, onDelete }) {
 	const addJournalItem = (e) => {
 		e.preventDefault();
 		dispatch({ type: 'SUBMIT_JOURNAL', payload: {currentUser: currentUser, userInfo: userInfo, dispatch: dispatch} });
+		getJournals(dispatch, currentUser);
 	};
 
 	const deleteJournalItem = () => {

@@ -1,9 +1,10 @@
 import { Box, CircularProgress, Fab } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Check, Save } from '@mui/icons-material';
-import { green } from '@mui/material/colors';
-import { getProblems, updateProblemItem } from '../../../actions/problem.js';
+import { Check, Save, Delete } from '@mui/icons-material';
+import { green, red } from '@mui/material/colors';
+import { getProblems, updateProblemItem, removeProblemItem } from '../../../actions/problem.js';
 import { useValue } from '../../../context/ContextProvider.jsx';
+import RemoveModal from '../../../components/RemoveModal.jsx';
 
 const ProblemsActions = ({ params, rowId, setRowId }) => {
   const {
@@ -47,7 +48,7 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
         setRemoved(true);
         setRowId(null);
         setOpenRemoveModal(false);
-        getUsers(dispatch, currentUser);
+        getProblems(dispatch, currentUser);
       }
     };
 
@@ -56,7 +57,7 @@ const ProblemsActions = ({ params, rowId, setRowId }) => {
 
     const { problem_text, id, control_date, problem_type, object_of_work, user, problem_status} = params.row;
     const update = await updateProblemItem(
-      { problem_text, control_date, problem_type, object_of_work, user },
+      { problem_text, control_date, problem_type, object_of_work, user, problem_status },
       id,
       dispatch,
       currentUser
